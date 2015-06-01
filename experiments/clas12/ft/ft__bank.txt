@@ -1,0 +1,24 @@
+                 ftm  |              bankid  |                                       ftm bank ID  |  700   |                  Di  
+                 ftm  |               layer  |                                      layer number  |    1   |                  Di  
+                 ftm  |              sector  |                                     sector number  |    2   |                  Di  
+                 ftm  |               strip  |                                      strip number  |    3   |                  Di  
+                 ftm  |                 adc  |                                               adc  |    4   |                  Di  
+                 ftm  |                 tdc  |                                               tdc  |    5   |                  Di  
+                 ftm  |                hitn  |                                        hit number  |   99   |                  Di  
+             ft_hodo  |              bankid  |                                   ft_hodo bank ID  |  800   |                  Di  
+             ft_hodo  |                  id  |                                         id number  |    1   |                  Di  
+             ft_hodo  |               layer  |                                      layer number  |    2   |                  Di  
+             ft_hodo  |              sector  |                                     Sector number  |    3   |                  Di  
+             ft_hodo  |                 adc  |                                               adc  |    4   |                  Di  
+             ft_hodo  |                 tdc  |                                               tdc  |    5   |                  Di  
+             ft_hodo  |                etot  |                                  Energy deposited  |    6   |                  Di  
+             ft_hodo  |                   x  |                                  X Coordinate hit  |    7   |                  Di  
+             ft_hodo  |                   y  |                                  Y Coordinate hit  |    8   |                  Di  
+             ft_hodo  |                   z  |                                  Z Coordinate hit  |    9   |                  Di  
+             ft_hodo  |                hitn  |                                        hit number  |   99   |                  Di  
+              ft_cal  |              bankid  |                                    ft_cal bank ID  |  900   |                  Di  
+              ft_cal  |                 idx  |                                        idx number  |    1   |                  Di  
+              ft_cal  |                 idy  |                                        idy number  |    2   |                  Di  
+              ft_cal  |                 adc  |                                               adc  |    3   |                  Di  
+              ft_cal  |                 tdc  |                                               tdc  |    4   |                  Di  
+              ft_cal  |                hitn  |                                        hit number  |   99   |                  Di  

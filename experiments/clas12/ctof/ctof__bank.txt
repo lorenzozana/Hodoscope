@@ -1,0 +1,7 @@
+                ctof  |              bankid  |                                      ctof bank ID  |  400   |                  Di  
+                ctof  |              paddle  |                                     paddle number  |    1   |                  Di  
+                ctof  |                ADCL  |                                          ADC Left  |    2   |                  Di  
+                ctof  |                ADCR  |                                         ADC Right  |    3   |                  Di  
+                ctof  |                TDCL  |                                          TDC Left  |    4   |                  Di  
+                ctof  |                TDCR  |                                         TDC Right  |    5   |                  Di  
+                ctof  |                hitn  |                                        hit number  |   99   |                  Di  

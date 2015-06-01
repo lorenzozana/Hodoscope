@@ -1,0 +1,4 @@
+               epoxy  |              micromegas epoxy  |      1.16  |         4  |                                 C 15 H 32 N 2 O 4  | none  | none  | none  | none  | none  
+            MMStrips  |  micromegas strips are copper  |      6.72  |         1  |                                           G4_Cu 1  | none  | none  | none  | none  | none  
+     pcBoardMaterial  |         bst pc board material  |     1.860  |         3  |                      G4_Fe 0.3 G4_C 0.4 G4_Si 0.3  | none  | none  | none  | none  | none  
+                peek  |                      bst peek  |      1.31  |         3  |                                     C 19 H 12 O 3  | none  | none  | none  | none  | none  

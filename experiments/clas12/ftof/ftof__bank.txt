@@ -1,0 +1,36 @@
+            ftof_p1a  |              bankid  |                                  ftof_p1a bank ID  | 1000   |                  Di  
+            ftof_p1a  |              sector  |                                     sector number  |    1   |                  Di  
+            ftof_p1a  |              paddle  |                                     paddle number  |    2   |                  Di  
+            ftof_p1a  |                ADCL  |                                          ADC Left  |    3   |                  Di  
+            ftof_p1a  |                ADCR  |                                         ADC Right  |    4   |                  Di  
+            ftof_p1a  |                TDCL  |                                          TDC Left  |    5   |                  Di  
+            ftof_p1a  |                TDCR  |                                         TDC Right  |    6   |                  Di  
+            ftof_p1a  |               ADCLu  |                             ADC Left  - unsmeared  |    7   |                  Di  
+            ftof_p1a  |               ADCRu  |                             ADC Right - unsmeared  |    8   |                  Di  
+            ftof_p1a  |               TDCLu  |                             TDC Left  - unsmeared  |    9   |                  Di  
+            ftof_p1a  |               TDCRu  |                             TDC Right - unsmeared  |   10   |                  Di  
+            ftof_p1a  |                hitn  |                                        hit number  |   99   |                  Di  
+            ftof_p1b  |              bankid  |                                  ftof_p1b bank ID  | 1100   |                  Di  
+            ftof_p1b  |              sector  |                                     sector number  |    1   |                  Di  
+            ftof_p1b  |              paddle  |                                     paddle number  |    2   |                  Di  
+            ftof_p1b  |                ADCL  |                                          ADC Left  |    3   |                  Di  
+            ftof_p1b  |                ADCR  |                                         ADC Right  |    4   |                  Di  
+            ftof_p1b  |                TDCL  |                                          TDC Left  |    5   |                  Di  
+            ftof_p1b  |                TDCR  |                                         TDC Right  |    6   |                  Di  
+            ftof_p1b  |               ADCLu  |                             ADC Left  - unsmeared  |    7   |                  Di  
+            ftof_p1b  |               ADCRu  |                             ADC Right - unsmeared  |    8   |                  Di  
+            ftof_p1b  |               TDCLu  |                             TDC Left  - unsmeared  |    9   |                  Di  
+            ftof_p1b  |               TDCRu  |                             TDC Right - unsmeared  |   10   |                  Di  
+            ftof_p1b  |                hitn  |                                        hit number  |   99   |                  Di  
+             ftof_p2  |              bankid  |                                   ftof_p2 bank ID  | 1200   |                  Di  
+             ftof_p2  |              sector  |                                     sector number  |    1   |                  Di  
+             ftof_p2  |              paddle  |                                     paddle number  |    2   |                  Di  
+             ftof_p2  |                ADCL  |                                          ADC Left  |    3   |                  Di  
+             ftof_p2  |                ADCR  |                                         ADC Right  |    4   |                  Di  
+             ftof_p2  |                TDCL  |                                          TDC Left  |    5   |                  Di  
+             ftof_p2  |                TDCR  |                                         TDC Right  |    6   |                  Di  
+             ftof_p2  |               ADCLu  |                             ADC Left  - unsmeared  |    7   |                  Di  
+             ftof_p2  |               ADCRu  |                             ADC Right - unsmeared  |    8   |                  Di  
+             ftof_p2  |               TDCLu  |                             TDC Left  - unsmeared  |    9   |                  Di  
+             ftof_p2  |               TDCRu  |                             TDC Right - unsmeared  |   10   |                  Di  
+             ftof_p2  |                hitn  |                                        hit number  |   99   |                  Di  

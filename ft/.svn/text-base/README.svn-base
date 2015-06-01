@@ -1,0 +1,29 @@
+
+CLAS12 FT README
+
+--------------------------------------------------
+
+The geometry consists of:
+LeadTungsten calorimeter 
+Scintillation hodoscope
+Micromegas tracker 
+
+In MYSQL mode, before building the geometry one must
+upload the parameters onto the DB.
+
+The commands to build the geometry, banks, hit defs
+and materials are:
+
+upload_parameters.pl config.dat   < only for MYSQL factory
+./geometry.pl config.dat
+./bank.pl config.dat
+./hit.pl config.dat
+./materials.pl config.dat
+
+
+--------------------------------------------------
+
+To remove the created text files:
+
+rm -f ft__bank*.txt ft__geometry*.txt ft__hit*.txt ft__materials*.txt out.ev out.txt
+

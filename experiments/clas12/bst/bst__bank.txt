@@ -1,0 +1,7 @@
+                 bst  |              bankid  |                                       bst bank ID  |  100   |                  Di  
+                 bst  |               layer  |                                      layer number  |    1   |                  Di  
+                 bst  |              sector  |                                     sector number  |    2   |                  Di  
+                 bst  |               strip  |                                      strip number  |    3   |                  Di  
+                 bst  |                 ADC  |                                         3 bit ADC  |    4   |                  Di  
+                 bst  |                 bco  |                                  Time information  |    5   |                  Dd  
+                 bst  |                hitn  |                                        hit number  |   99   |                  Di  
