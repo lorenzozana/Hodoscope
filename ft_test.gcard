@@ -1,11 +1,11 @@
 <gcard>
-<detector name="experiments/clas12/ft/ft" factory="TEXT" variation="0p200paint"/>
+<detector name="experiments/clas12/ft/ft" factory="TEXT" variation="0p150paint"/>
 <option name="geometry" value="800x600"/> 
 <!--	<option name="BEAM_P" value="e-, 2.0*GeV, 3*deg, 10*deg"/> -->
         <option name="PRINT_EVENT" value="10000" /> 
-<option name="N"    value="100000" />   
-<!-- <option name="USE_GUI"    value="0" /> -->	               
-<option name="INPUT_GEN_FILE" value="LUND, output.lund"/>
+<!--<option name="N"    value="100000" />   -->
+<!-- <option name="USE_GUI"    value="0" />                
+<option name="INPUT_GEN_FILE" value="LUND, output.lund"/> -->
 <!--	<option name="LUMI_EVENT" value="1, 120*ns, 2*ns"/> -->
 <!--	<option name="LUMI_P"          value="e-, 11.0*GeV, 3*deg, 0*deg" />  -->
 <!--	<option name="LUMI_SPREAD_P"   value="0*GeV,2*deg, 90*deg" />  -->
@@ -19,7 +19,7 @@
         <option name="RECORD_PASSBY"   value="1" />  
 
 <option name="OUTPUT"   value="txt, out075.txt"/>
-<!--	<option name="CHECK_OVERLAPS"      value="1" />  -->
+<option name="CHECK_OVERLAPS"      value="1" />
 
 
 </gcard>

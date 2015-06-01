@@ -72,7 +72,7 @@
 
 
   TCanvas *c1 = new TCanvas("c1","c1",800,600);
-
+  c1->SetLogy();
   TLegend *leg = new TLegend(0.6,0.5,0.98,0.8);
   leg->AddEntry(h1_Edep_thick_075,"0.075mm paint","l");
   leg->AddEntry(h1_Edep_thick_100,"0.100mm paint","l");
