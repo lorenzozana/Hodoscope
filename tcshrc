@@ -1,0 +1,3 @@
+setenv JLAB_ROOT /home/lzana/jlab_software
+setenv JLAB_VERSION 1.2
+source $JLAB_ROOT/$JLAB_VERSION/ce/jlab.csh

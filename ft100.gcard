@@ -18,7 +18,7 @@
 <option name="HALL_FIELD"  value="clas12-solenoid"/>
         <option name="RECORD_PASSBY"   value="1" />  
 
-<option name="OUTPUT"   value="txt, out075.txt"/>
+<option name="OUTPUT"   value="txt, out100.txt"/>
 <!--	<option name="CHECK_OVERLAPS"      value="1" />  -->
 
 

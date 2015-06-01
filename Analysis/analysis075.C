@@ -128,7 +128,7 @@ Bool_t analysis075::Process(Long64_t entry)
   double rad_hit = 0.;
   for (UInt_t ii=0; ii<X->size(); ii++) {
     rad_hit = pow(pow(X->at(ii),2)+pow(Y->at(ii),2),0.5);
-    if (rad_hit < 172.0) { // 175mm max - 3mm thickness of out layer
+    if (rad_hit < 150.0) { // 175mm max - 3mm thickness of out layer
       if ( Edep->at(ii) > threshold && Layer->at(ii)>-1 && Sector->at(ii)>-1 && Id->at(ii)>-1 ) {
 	// valid hit
 	Edep_val[Layer->at(ii)][Sector->at(ii)][Id->at(ii)] = Edep->at(ii);
@@ -142,7 +142,7 @@ Bool_t analysis075::Process(Long64_t entry)
 
   for (int j=0; j<4; j++) {
     for (int k=0; k<29; k++) {
-      if (Edep_val[0][j][k] > threshold && Edep_val[1][j][k] >threshold ) {
+      if (Edep_val[0][j][k] > threshold || Edep_val[1][j][k] >threshold ) {
 	h1_Edep_thin->Fill(Edep_val[0][j][k]);
 	h1_Edep_thick->Fill(Edep_val[1][j][k]);
 	h1_theta->Fill(theta);
