@@ -1,0 +1,28 @@
+
+CLAS12 CND README
+
+--------------------------------------------------
+
+The geometry consists of 3 layers of scintillators:
+
+
+In MYSQL mode, before building the geometry one must
+upload the parameters onto the DB.
+
+The commands to build the geometry, banks, hit defs
+and materials are:
+
+upload_parameters.pl config.dat   < only for MYSQL factory
+./geometry.pl config.dat
+./bank.pl config.dat
+./hit.pl config.dat
+./materials.pl config.dat
+
+
+
+--------------------------------------------------
+
+To remove the created text files:
+
+rm -f cnd__bank*.txt cnd__geometry*.txt cnd__hit*.txt cnd__materials*.txt out.ev out.txt
+

@@ -1,0 +1,8 @@
+                 cnd  |              bankid  |                                       cnd bank ID  |  300   |                  Di  
+                 cnd  |               layer  |                                     sector number  |    1   |                  Di  
+                 cnd  |              paddle  |                                     paddle number  |    2   |                  Di  
+                 cnd  |                ADCD  |                                        ADC Direct  |    3   |                  Di  
+                 cnd  |                ADCN  |                                      ADC Neighbor  |    4   |                  Di  
+                 cnd  |                TDCD  |                                        TDC Direct  |    5   |                  Di  
+                 cnd  |                TDCN  |                                      TDC Neighbor  |    6   |                  Di  
+                 cnd  |                hitn  |                                        hit number  |   99   |                  Di  
