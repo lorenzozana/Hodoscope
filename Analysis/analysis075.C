@@ -53,7 +53,8 @@ void analysis075::SlaveBegin(TTree * /*tree*/)
    h2_Edep_thin_z  = new TH2F("h2_Edep_thin_z","Energy deposited Thin Tyles (MeV) vs Z for R_{hit} < 173mm; Z(mm); E_{dep}(MeV)",100,1810.,1840.,100,0.,10.);
    h2_Edep_thick_z  = new TH2F("h2_Edep_thick_z","Energy deposited Thick Tyles (MeV) vs Z for R_{hit} < 173mm; Z(mm); E_{dep}(MeV)",100,1810,1840,100,0.,10.);
    h2_XY = new TH2F("h2_XY","Hit 2Dim; X(mm); Y(mm)",100,-15.0,173.0,100,0.0,173.0);
-   h2_Edep_XY = new TH2F("h2_Edep_XY","Hit 2Dim weighted with Edep; X(mm); Y(mm)",100,-15.0,173.0,100,0.0,173.0);
+   h2_Edep_thin_XY = new TH2F("h2_Edep_thin_XY","Hit 2Dim weighted with Edep THIN layer; X(mm); Y(mm)",100,-15.0,173.0,100,0.0,173.0);
+   h2_Edep_thick_XY = new TH2F("h2_Edep_thick_XY","Hit 2Dim weighted with Edep THICK layer; X(mm); Y(mm)",100,-15.0,173.0,100,0.0,173.0);
    h2_theta_z = new TH2F("h2_theta_z","#theta e^{-} at target vs z",100,1810,1840,100,0.,6.);
 
 
@@ -64,7 +65,8 @@ void analysis075::SlaveBegin(TTree * /*tree*/)
    fOutput->Add(h2_Edep_thin_z);
    fOutput->Add(h2_Edep_thick_z);
    fOutput->Add(h2_XY);
-   fOutput->Add(h2_Edep_XY);
+   fOutput->Add(h2_Edep_thin_XY);
+   fOutput->Add(h2_Edep_thick_XY);
    fOutput->Add(h2_theta_z);
 					  
 }
@@ -88,6 +90,7 @@ Bool_t analysis075::Process(Long64_t entry)
    // Use fStatus to set the return value of TTree::Process().
    //
    // The return value is currently not used.
+  Int_t numb_entries = Int_t(b_n_hits->GetEntries());
 
   b_n_hits->GetEntry(entry);
   
@@ -143,18 +146,22 @@ Bool_t analysis075::Process(Long64_t entry)
   for (int j=0; j<4; j++) {
     for (int k=0; k<29; k++) {
       if (Edep_val[0][j][k] > threshold || Edep_val[1][j][k] >threshold ) {
-	h1_Edep_thin->Fill(Edep_val[0][j][k]);
-	h1_Edep_thick->Fill(Edep_val[1][j][k]);
 	h1_theta->Fill(theta);
 	h1_z->Fill(Z_val[0][j][k]);
 	h1_z->Fill(Z_val[1][j][k]);
-	h2_Edep_thin_z->Fill(Z_val[0][j][k],Edep_val[0][j][k]);
-	h2_Edep_thick_z->Fill(Z_val[1][j][k],Edep_val[1][j][k]);
 	h2_XY->Fill(X_val[1][j][k],Y_val[1][j][k]);
-	h2_Edep_XY->Fill(X_val[1][j][k],Y_val[1][j][k],Edep_val[1][j][k]);
 	h2_theta_z->Fill(Z_val[0][j][k],theta);
 	h2_theta_z->Fill(Z_val[1][j][k],theta);
-
+      }
+      if (Edep_val[0][j][k] > threshold) {
+	h2_Edep_thin_XY->Fill(X_val[1][j][k],Y_val[1][j][k],Edep_val[0][j][k]);
+	h2_Edep_thin_z->Fill(Z_val[0][j][k],Edep_val[0][j][k]);
+	h1_Edep_thin->Fill(Edep_val[0][j][k]);
+      }
+      if (Edep_val[1][j][k] > threshold) {
+	h2_Edep_thick_XY->Fill(X_val[1][j][k],Y_val[1][j][k],Edep_val[1][j][k]);
+	h2_Edep_thick_z->Fill(Z_val[1][j][k],Edep_val[1][j][k]);
+	h1_Edep_thick->Fill(Edep_val[1][j][k]);
       }
     }
   }

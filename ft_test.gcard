@@ -1,5 +1,5 @@
 <gcard>
-<detector name="experiments/clas12/ft/ft" factory="TEXT" variation="0p150paint"/>
+<detector name="experiments/clas12/ft/ft" factory="TEXT" variation="0p000paint"/>
 <option name="geometry" value="800x600"/> 
 <!--	<option name="BEAM_P" value="e-, 2.0*GeV, 3*deg, 10*deg"/> -->
         <option name="PRINT_EVENT" value="10000" /> 
@@ -18,7 +18,7 @@
 <option name="HALL_FIELD"  value="clas12-solenoid"/>
         <option name="RECORD_PASSBY"   value="1" />  
 
-<option name="OUTPUT"   value="txt, out075.txt"/>
+<option name="OUTPUT"   value="txt, out.txt"/>
 <option name="CHECK_OVERLAPS"      value="1" />
 
 

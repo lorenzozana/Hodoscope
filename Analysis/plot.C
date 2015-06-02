@@ -55,20 +55,36 @@
   h2_Edep_thick_z_200->SetTitle("Energy deposited Thick Tyles (MeV) vs Z for R_{hit} < 173mm  (0.200mm)");
 
 
-  TH2F *h2_Edep_XY_075 = (TH2F*)file075->Get("h2_Edep_XY");
-  TH2F *h2_Edep_XY_100 = (TH2F*)file100->Get("h2_Edep_XY");
-  TH2F *h2_Edep_XY_150 = (TH2F*)file150->Get("h2_Edep_XY");
-  TH2F *h2_Edep_XY_200 = (TH2F*)file200->Get("h2_Edep_XY");
+  TH2F *h2_Edep_thin_XY_075 = (TH2F*)file075->Get("h2_Edep_thin_XY");
+  TH2F *h2_Edep_thin_XY_100 = (TH2F*)file100->Get("h2_Edep_thin_XY");
+  TH2F *h2_Edep_thin_XY_150 = (TH2F*)file150->Get("h2_Edep_thin_XY");
+  TH2F *h2_Edep_thin_XY_200 = (TH2F*)file200->Get("h2_Edep_thin_XY");
 
-  h2_Edep_XY_075->SetTitle("Hit 2Dim weighted with Edep (0.075mm)");
-  h2_Edep_XY_100->SetTitle("Hit 2Dim weighted with Edep (0.100mm)");
-  h2_Edep_XY_150->SetTitle("Hit 2Dim weighted with Edep (0.150mm)");
-  h2_Edep_XY_200->SetTitle("Hit 2Dim weighted with Edep (0.200mm)");
+  h2_Edep_thin_XY_075->SetTitle("THIN Layer Hit 2Dim weighted with Edep (0.075mm)");
+  h2_Edep_thin_XY_100->SetTitle("THIN Layer Hit 2Dim weighted with Edep (0.100mm)");
+  h2_Edep_thin_XY_150->SetTitle("THIN Layer Hit 2Dim weighted with Edep (0.150mm)");
+  h2_Edep_thin_XY_200->SetTitle("THIN Layer Hit 2Dim weighted with Edep (0.200mm)");
 
-  h2_Edep_XY_075->SetMaximum(200);
-  h2_Edep_XY_100->SetMaximum(200);
-  h2_Edep_XY_150->SetMaximum(200);
-  h2_Edep_XY_200->SetMaximum(200);
+  h2_Edep_thin_XY_075->SetMaximum(50);
+  h2_Edep_thin_XY_100->SetMaximum(50);
+  h2_Edep_thin_XY_150->SetMaximum(50);
+  h2_Edep_thin_XY_200->SetMaximum(50);
+
+
+  TH2F *h2_Edep_thick_XY_075 = (TH2F*)file075->Get("h2_Edep_thick_XY");
+  TH2F *h2_Edep_thick_XY_100 = (TH2F*)file100->Get("h2_Edep_thick_XY");
+  TH2F *h2_Edep_thick_XY_150 = (TH2F*)file150->Get("h2_Edep_thick_XY");
+  TH2F *h2_Edep_thick_XY_200 = (TH2F*)file200->Get("h2_Edep_thick_XY");
+
+  h2_Edep_thick_XY_075->SetTitle("THICK Layer Hit 2Dim weighted with Edep (0.075mm)");
+  h2_Edep_thick_XY_100->SetTitle("THICK Layer Hit 2Dim weighted with Edep (0.100mm)");
+  h2_Edep_thick_XY_150->SetTitle("THICK Layer Hit 2Dim weighted with Edep (0.150mm)");
+  h2_Edep_thick_XY_200->SetTitle("THICK Layer Hit 2Dim weighted with Edep (0.200mm)");
+
+  h2_Edep_thick_XY_075->SetMaximum(100);
+  h2_Edep_thick_XY_100->SetMaximum(100);
+  h2_Edep_thick_XY_150->SetMaximum(100);
+  h2_Edep_thick_XY_200->SetMaximum(100);
 
 
   TCanvas *c1 = new TCanvas("c1","c1",800,600);
@@ -141,18 +157,33 @@
 
   c2->cd(1);
   c2->cd(1)->SetLogz(0);
-  h2_Edep_XY_075->Draw("COLZ");
+  h2_Edep_thick_XY_075->Draw("COLZ");
   c2->cd(2);
   c2->cd(2)->SetLogz(0);
-  h2_Edep_XY_100->Draw("COLZ");
+  h2_Edep_thick_XY_100->Draw("COLZ");
   c2->cd(3);
   c2->cd(3)->SetLogz(0);
-  h2_Edep_XY_150->Draw("COLZ");
+  h2_Edep_thick_XY_150->Draw("COLZ");
   c2->cd(4);
   c2->cd(4)->SetLogz(0);
-  h2_Edep_XY_200->Draw("COLZ");
+  h2_Edep_thick_XY_200->Draw("COLZ");
 
-  c2->Print("pictures/Edep_XY.pdf");
+  c2->Print("pictures/Edep_thick_XY.pdf");
 
+
+  c2->cd(1);
+  c2->cd(1)->SetLogz(0);
+  h2_Edep_thin_XY_075->Draw("COLZ");
+  c2->cd(2);
+  c2->cd(2)->SetLogz(0);
+  h2_Edep_thin_XY_100->Draw("COLZ");
+  c2->cd(3);
+  c2->cd(3)->SetLogz(0);
+  h2_Edep_thin_XY_150->Draw("COLZ");
+  c2->cd(4);
+  c2->cd(4)->SetLogz(0);
+  h2_Edep_thin_XY_200->Draw("COLZ");
+
+  c2->Print("pictures/Edep_thin_XY.pdf");
 
 }

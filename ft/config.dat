@@ -2,7 +2,7 @@
 
 # Detector name and variation
 detector_name: ft
-variation:     0p200paint
+variation:     0p000paint
 
 # Factory can be MYQL or TEXT
 factory:       TEXT

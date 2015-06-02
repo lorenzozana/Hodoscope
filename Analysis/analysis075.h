@@ -34,7 +34,8 @@ public :
   TH2F            *h2_Edep_thin_z;
   TH2F            *h2_Edep_thick_z;
   TH2F            *h2_XY;
-  TH2F            *h2_Edep_XY;
+  TH2F            *h2_Edep_thin_XY;
+  TH2F            *h2_Edep_thick_XY;
   TH2F            *h2_theta_z;
 
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain

@@ -1,4 +1,2 @@
 /bin/tcsh -c "source tcshrc ; gemc -gcard=ft075.gcard ; ./gemctxt_to_root.py out075.txt"
-/bin/tcsh -c "source tcshrc ; gemc -gcard=ft100.gcard ; ./gemctxt_to_root.py out100.txt"
-/bin/tcsh -c "source tcshrc ; gemc -gcard=ft150.gcard ; ./gemctxt_to_root.py out150.txt"
-/bin/tcsh -c "source tcshrc ; gemc -gcard=ft200.gcard ; ./gemctxt_to_root.py out200.txt"
+/bin/tcsh -c "source tcshrc ; gemc -gcard=ft000.gcard ; ./gemctxt_to_root.py out000.txt"
