@@ -53,8 +53,8 @@ void analysis075::SlaveBegin(TTree * /*tree*/)
    h2_Edep_thin_z  = new TH2F("h2_Edep_thin_z","Energy deposited Thin Tyles (MeV) vs Z for R_{hit} < 173mm; Z(mm); E_{dep}(MeV)",100,1810.,1840.,100,0.,10.);
    h2_Edep_thick_z  = new TH2F("h2_Edep_thick_z","Energy deposited Thick Tyles (MeV) vs Z for R_{hit} < 173mm; Z(mm); E_{dep}(MeV)",100,1810,1840,100,0.,10.);
    h2_XY = new TH2F("h2_XY","Hit 2Dim; X(mm); Y(mm)",100,-15.0,173.0,100,0.0,173.0);
-   h2_Edep_thin_XY = new TH2F("h2_Edep_thin_XY","Hit 2Dim weighted with Edep THIN layer; X(mm); Y(mm)",100,-15.0,173.0,100,0.0,173.0);
-   h2_Edep_thick_XY = new TH2F("h2_Edep_thick_XY","Hit 2Dim weighted with Edep THICK layer; X(mm); Y(mm)",100,-15.0,173.0,100,0.0,173.0);
+   h2_Edep_thin_XY = new TH2F("h2_Edep_thin_XY","Hit 2Dim weighted with Edep THIN layer; X(mm); Y(mm)",94,-15.0,173.0,86,0.0,173.0);
+   h2_Edep_thick_XY = new TH2F("h2_Edep_thick_XY","Hit 2Dim weighted with Edep THICK layer; X(mm); Y(mm)",94,-15.0,173.0,86,0.0,173.0);
    h2_theta_z = new TH2F("h2_theta_z","#theta e^{-} at target vs z",100,1810,1840,100,0.,6.);
 
 
@@ -108,7 +108,7 @@ Bool_t analysis075::Process(Long64_t entry)
   int sector_at = -1;
   int id_at = -1;
   int layer_at = -1;
-  double threshold = 0.1;  // Threshold Edep
+  double threshold = 1.0;  // Threshold Edep
   double theta = 0.;
   double Edep_val[2][4][29]; // Construct array of energy deposited in Hodoscope
   double Z_val[2][4][29];
@@ -126,12 +126,17 @@ Bool_t analysis075::Process(Long64_t entry)
       }
     }
   }
- 
+  int valid_hit =0;
+  int valid_hit0 =0;
+  int valid_hit1 =0;
+  double Edepat =0.;
+  double Edep1 =0.;
+  double Edep0 =0.;
   if (P_Z>0.0) theta = TMath::ATan(pow(pow(P_X,2)+pow(P_Y,2),0.5)/P_Z) / TMath::Pi() * 180;
   double rad_hit = 0.;
   for (UInt_t ii=0; ii<X->size(); ii++) {
     rad_hit = pow(pow(X->at(ii),2)+pow(Y->at(ii),2),0.5);
-    if (rad_hit < 150.0) { // 175mm max - 3mm thickness of out layer
+    if (rad_hit < 172.0) { // 175mm max - 3mm thickness of out layer // put 150 to avoid cutting edge differences
       if ( Edep->at(ii) > threshold && Layer->at(ii)>-1 && Sector->at(ii)>-1 && Id->at(ii)>-1 ) {
 	// valid hit
 	Edep_val[Layer->at(ii)][Sector->at(ii)][Id->at(ii)] = Edep->at(ii);
@@ -145,25 +150,38 @@ Bool_t analysis075::Process(Long64_t entry)
 
   for (int j=0; j<4; j++) {
     for (int k=0; k<29; k++) {
-      if (Edep_val[0][j][k] > threshold || Edep_val[1][j][k] >threshold ) {
+      if (Edep_val[0][j][k] > threshold && Edep_val[1][j][k] >threshold ) {
+	valid_hit =1;
 	h1_theta->Fill(theta);
 	h1_z->Fill(Z_val[0][j][k]);
 	h1_z->Fill(Z_val[1][j][k]);
 	h2_XY->Fill(X_val[1][j][k],Y_val[1][j][k]);
 	h2_theta_z->Fill(Z_val[0][j][k],theta);
 	h2_theta_z->Fill(Z_val[1][j][k],theta);
+	Edep0 = Edep0 + Edep_val[0][j][k];
+	Edep1 = Edep1 + Edep_val[1][j][k];
       }
       if (Edep_val[0][j][k] > threshold) {
+	valid_hit0 =1;
+	//	Edep0 = Edep0 + Edep_val[0][j][k];
 	h2_Edep_thin_XY->Fill(X_val[1][j][k],Y_val[1][j][k],Edep_val[0][j][k]);
 	h2_Edep_thin_z->Fill(Z_val[0][j][k],Edep_val[0][j][k]);
-	h1_Edep_thin->Fill(Edep_val[0][j][k]);
+
       }
       if (Edep_val[1][j][k] > threshold) {
+	valid_hit1=1;
+	//	Edep1 = Edep1 + Edep_val[1][j][k];
 	h2_Edep_thick_XY->Fill(X_val[1][j][k],Y_val[1][j][k],Edep_val[1][j][k]);
 	h2_Edep_thick_z->Fill(Z_val[1][j][k],Edep_val[1][j][k]);
-	h1_Edep_thick->Fill(Edep_val[1][j][k]);
+
       }
     }
+  }
+  if (valid_hit == 1) {
+    h1_Edep_thin->Fill(Edep0);
+  }
+  if (valid_hit == 1) {  
+    h1_Edep_thick->Fill(Edep1);
   }
 
    return kTRUE;

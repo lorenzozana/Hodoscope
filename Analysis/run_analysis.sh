@@ -1,3 +1,5 @@
+root -q run_analysis000.C
+cp analysis_output.root analysis_output000.root 
 root -q run_analysis075.C
 cp analysis_output.root analysis_output075.root 
 root -q run_analysis100.C
