@@ -288,7 +288,66 @@ my @p_theta = (-0.65294,-0.50511,-0.91786,-0.78540,-0.61741,-1.06568,-0.95339,-0
 #my @p_R	= (16.2901,15.7331,16.2901,15.0571,13.1526,15.7331,13.1526,10.8739,7.6014,15.9784,15.3884,15.3884,15.9784,13.0919,12.3649,12.3649,13.0919,10.2954,9.3535,9.3535,10.2954,8.7892,7.9362,7.3125,6.9797,6.9797,7.3125,7.9362,8.7892);
 #my @p_theta = (-0.65297,-0.50451,-0.91783,-0.78540,-0.61654,-1.06629,-0.95426,-0.78540,-0.78540,-0.28960,-0.09900,0.09900,0.28960,-0.35601,-0.12332,0.12332,0.35601,-0.45917,-0.16334,0.16334,0.45917,-0.66118,-0.50722,-0.32184,-0.11069,0.11069,0.32184,0.50722,0.66118);
 
+#############
+### reading the coordinates from two text files, hodo_position_thin.txt and hodo_position_thick.txt
+#############
+my @abc;
+my @sector_hodo_thin;
+my @tyle_hodo_thin;
+my @tyleN_hodo_thin;
+my @x_hodo_thin;
+my @y_hodo_thin;
+my @size_x_hodo_thin;
+my @size_y_hodo_thin;
+my @sector_hodo_thick;
+my @tyle_hodo_thick;
+my @tyleN_hodo_thick;
+my @x_hodo_thick;
+my @y_hodo_thick;
+my @size_x_hodo_thick;
+my @size_y_hodo_thick;
+my $iter = 0;
+my $line;
 
+
+open (FILE,"hodo_position_thin.txt");
+while ($line = <FILE>) {
+
+    @abc = split '\t', $line;
+    $sector_hodo_thin[$iter] = substr($line,0,1);
+    push (@tyle_hodo_thin,$abc[1]);
+    push (@tyleN_hodo_thin,$abc[2]);
+    push (@x_hodo_thin, $abc[3]);
+    push (@y_hodo_thin, $abc[4]);
+    push (@size_x_hodo_thin, $abc[5]);
+    push (@size_y_hodo_thin, $abc[6]);
+#    print "$sector_hodo_thin[$iter] \t $tyle_hodo_thin[$iter] \t $tyleN_hodo_thin[$iter] \t $x_hodo_thin[$iter] \t $y_hodo_thin[$iter] \t $size_x_hodo_thin[$iter] \t $size_y_hodo_thin[$iter]";
+
+    $iter = $iter+1;
+
+}
+
+close FILE;
+
+
+open (FILE,"hodo_position_thick.txt");
+while ($line = <FILE>) {
+
+    @abc = split '\t', $line;
+    $sector_hodo_thick[$iter] = substr($line,0,1);
+    push (@tyle_hodo_thick,$abc[1]);
+    push (@tyleN_hodo_thick,$abc[2]);
+    push (@x_hodo_thick, $abc[3]);
+    push (@y_hodo_thick, $abc[4]);
+    push (@size_x_hodo_thick, $abc[5]);
+    push (@size_y_hodo_thick, $abc[6]);
+#    print "$sector_hodo_thick[$iter] \t $tyle_hodo_thick[$iter] \t $tyleN_hodo_thick[$iter] \t $x_hodo_thick[$iter] \t $y_hodo_thick[$iter] \t $size_x_hodo_thick[$iter] \t $size_y_hodo_thick[$iter]";
+
+    $iter = $iter+1;
+
+}
+
+close FILE;
 
 
 my @p_size = (15.0,30.0,15.0,30.0,30.0,30.0,30.0,30.0,15.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0);
@@ -1132,7 +1191,7 @@ sub make_ft_hodo
 		print_det(\%configuration, \%detector);
 	}
 	
-	for ( my $l = 0; $l < 2; $l++ ) { # loop over layers
+	my $l=0; # thick layer 
 	    my $p_X=0.;
 	    my $p_Y=0.;
 	    my $p_nsize_o = 0.;
@@ -1192,7 +1251,6 @@ sub make_ft_hodo
 		    
 		}
 	    }
-	}
 }
 
 
