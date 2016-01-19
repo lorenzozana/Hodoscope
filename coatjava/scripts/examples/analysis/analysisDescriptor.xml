@@ -1,0 +1,8 @@
+<physics beam="11.0">
+
+<cut>
+<variable particle="[b]+[t]-[2212]" />
+</cut>
+
+
+<physics>

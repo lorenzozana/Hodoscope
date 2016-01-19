@@ -1,0 +1,1 @@
+$COATJAVA/bin/clas12-reconstruction -s DCHB:DCTB:BST:EB -config MAG::solenoid=-1.0 -i ../data/dvcs_gen_gemc_200.evio

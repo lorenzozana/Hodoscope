@@ -1,0 +1,19 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Copyright (c) 10/2013 JSA: TJNAF DAQ Group. All rights reserved.
+# This software was developed under the United States Government license.
+# Initiated by V. Gyurjyan
+#
+#   farm-orchestrator
+#
+#   Deploy, link and run a chain of services in every running DPE.
+#   author smancill
+#-----------------------------------------------------------------------------
+SCRIPTDIR=`dirname $0`
+CLARA_SERVICES=$SCRIPTDIR/../lib/services/ ; export CLARA_SERVICES
+CLAS12DIR=$SCRIPTDIR/.. ; export CLAS12DIR
+JVMOPTIONS=""
+MAIN=std.orchestrators.FarmOrchestrator
+CLASSPATH="$CLARA_SERVICES/.:$CLARA_SERVICES/lib/*:$CLAS12DIR/lib/clas/*"
+
+java $JVMOPTIONS -cp $CLASSPATH $MAIN "$@"

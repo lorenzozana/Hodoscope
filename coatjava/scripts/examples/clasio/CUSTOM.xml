@@ -1,0 +1,24 @@
+<evio_dictionary>
+<bank name="CUSTOM" tag="100" info="custom bank">
+  <section name="part" tag="101"  num="0"   info="bank rows">
+    <column name="status"  type="int8"    num="1"   info="status of the particle"/>
+    <column name="charge"  type="int16"   num="2"   info="charge of the particle"/>
+    <column name="pid"     type="int32"   num="3"   info="particle ID"/>
+    <column name="px"      type="float32" num="7"   info="x component of the momentum"/>
+    <column name="py"      type="float32" num="8"   info="y component of the momentum"/>
+    <column name="pz"      type="float32" num="9"   info="z component of the momentum"/>
+    <column name="vx"      type="float32" num="10"  info="x coordinate of vertex"/>
+    <column name="vy"      type="float32" num="11"  info="y coordinate of vertex"/>
+    <column name="vz"      type="float32" num="12"  info="z coordinate of vertex"/>
+  </section>
+  <section name="detector" tag="102" num="0" info="detector information">
+    <column name="detectorid"  type="int8"     num="1"   info="detector id"/>
+    <column name="pindex"      type="int8"     num="2"   info="index to particle section"/>
+    <column name="X"           type="float32"  num="3"   info="X position of detector hit"/>
+    <column name="Y"           type="float32"  num="4"   info="Y position of detector hit"/>
+    <column name="Z"           type="float32"  num="5"   info="Z position of detector hit"/>
+    <column name="energy"      type="float32"  num="6"   info="energy deposited in detector"/>
+    <column name="time"        type="float32"  num="7"   info="time (ns)"/>
+  </section>
+</bank>
+</evio_dictionary>

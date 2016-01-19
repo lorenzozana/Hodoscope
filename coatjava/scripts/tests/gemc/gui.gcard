@@ -1,0 +1,22 @@
+<gcard>
+<!--	<detector name="experiments/clas12/ec/ec"            factory="TEXT" variation="original"/> -->
+ 	<detector name="experiments/clas12/pcal/pcal"        factory="TEXT" variation="original"/> 
+	<detector name="experiments/clas12/ftof/ftof"        factory="TEXT" variation="original"/> 
+<!--	<detector name="experiments/clas12/dc/dc"            factory="TEXT" variation="original"/> -->
+<!--	<detector name="experiments/clas12/htcc/htcc"        factory="TEXT" variation="original"/> -->
+
+	<option name="geometry" value="800x600"/>
+	<option name="BEAM_P"   value="e-, 3.5*GeV, 15*deg, 0*deg"/>
+	<option name="SPREAD_P" value="0.5*GeV, 5*deg, 30*deg"/>
+	<option name="OUTPUT" value="evio, out.evio"/>
+
+	<option name="INTEGRATEDRAW" value="flux, bst, ctof, dc, ec, ftof_p1a, ftof_p1b, ftof_p2, htcc, pcal"/>
+	<option name="SAVE_ALL_MOTHERS" value="1"/>
+
+	<option name="SCALE_FIELD" value="clas12-torus-big, 1"/>
+        <option name="HALL_FIELD"  value="clas12-solenoid"/> 
+        <option name="SCALE_FIELD"  value="clas12-solenoid,1"/>
+
+	<option name="PHYSICS" value="FTFP_BERT + STD + Optical"/>
+	<option name="PRINT_EVENT" value="1"/>
+</gcard>

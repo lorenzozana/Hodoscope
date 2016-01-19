@@ -1,0 +1,25 @@
+#!/bin/sh -f
+
+SCRIPT_DIR=`dirname $0`
+DISTRO_DIR=$SCRIPT_DIR/../ ; export DISTRO_DIR
+CLARA_SERVICES=$DISTRO_DIR/lib/services; export CLARA_SERVICES
+DATAMINING=$DISTRO_DIR ; export DATAMINING
+CLAS12DIR=$DISTRO_DIR ; export CLAS12DIR
+
+MF_TORUS="-torus $CLAS12DIR/lib/data/magfield/clas12-fieldmap-torus.dat"
+MF_SOLENOID="-solenoid $CLAS12DIR/lib/data/magfield/clas12-fieldmap-solenoid.dat"
+GEOM="-dataPath $CLAS12DIR/lib/data/geometry"
+#CED_CLASSPATH = $CLAS12DIR/lib/clas/core/*:$CLAS12DIR/lib/ced/*
+echo +-------------------------------------------------------------------------
+echo "| Starting CLARA-PLATFORM with CLARA_SERVICES = " $CLARA_SERVICES
+echo +-------------------------------------------------------------------------
+echo "\n"
+
+echo "INSTALLATION DIRECTORY = " $CLARA_HOME
+echo "LIBRARY DIRECTORY      = " $DATAMINING/lib/clas/core
+
+
+#java -cp "$DATAMINING/lib/clas/core/*" org.jlab.coda.eventViewer.EventTreeFrame $*
+#java -cp "$CLAS12DIR/lib/clas/core/*:$CLAS12DIR/lib/ced/*" cnuphys.ced.frame.Ced  $MF_TORUS $MF_SOLENOID $GEOM
+#java -cp "$DATAMINING/lib/clas/*" org.jlab.utils.BoardDecoderVSCM $*
+java -Xms1024m -cp "$DATAMINING/lib/clas/*" org.jlab.evio.decode.EvioDecoderCommandLine $*

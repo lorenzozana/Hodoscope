@@ -1,0 +1,53 @@
+<gcard>
+	
+	<!-- central -->
+
+	<detector name="experiments/clas12/magnets/solenoid" factory="TEXT" variation="original"/>
+	<!--
+	<detector name="experiments/clas12/htcc/htcc"        factory="TEXT" variation="original"/>
+	-->
+	<detector name="experiments/clas12/bst/bst"          factory="TEXT" variation="original"/>
+	<detector name="experiments/clas12/ctof/ctof"        factory="TEXT" variation="original"/>
+	<!-- forward -->
+<!--	<detector name="experiments/clas12/ft/ft"            factory="TEXT" variation="test1"/> -->
+<!--
+	<detector name="experiments/clas12/fc/forwardCarriage" factory="TEXT" variation="original"/>
+	<detector name="experiments/clas12/dc/dc"              factory="TEXT" variation="original"/>
+	<detector name="experiments/clas12/ec/ec"              factory="TEXT" variation="original"/>
+	<detector name="experiments/clas12/ftof/ftof"          factory="TEXT" variation="original"/>
+	<detector name="experiments/clas12/pcal/pcal"          factory="TEXT" variation="javageom"/>
+-->
+	<option name="BEAM_P"   value="proton, 2.0*GeV, 90.0*deg, 0*deg"/>
+	<option name="SPREAD_P" value="1.0*GeV, 45.0*deg, 360*deg"/>
+	<option name="USE_GUI" value="0"/>
+	<option name="PRINT_EVENT" value="100"/>
+	<option name="INTEGRATEDRAW" value="flux, bst, ctof, htcc, ft, dc, ec, ftof_p1a, ftof_p1b, ftof_p2, pcal"/> 
+	<option name="SAVE_ALL_MOTHERS" value="1"/>
+
+	<option name="PHYSICS" value="FTFP_BERT + STD + Optical"/>
+	<option name="ENERGY_CUT"   value="1"/>
+
+	<option name="SCALE_FIELD" value="clas12-torus-big, -1"/>
+	<option name="HALL_FIELD"  value="clas12-solenoid"/> 
+	<option name="SCALE_FIELD"  value="clas12-solenoid,-1"/>
+
+	<option name="OUTPUT"   value="evio, out.ev"/>
+
+
+<!--  Existance, Displacement and tilts: Uncomment and edit the code below
+      to set existance, shift or tilt individual volumes -->
+
+<!--
+
+    <detector name="ec_s1">
+        <existence exist="no" />
+    </detector>
+
+    <detector name="ec_s3">
+        <position x="0*cm"  y="0*cm"  z="200*cm"  />
+        <rotation x="0*deg"  y="0*deg"  z="20*deg"  />
+    </detector>
+
+-->
+
+</gcard>

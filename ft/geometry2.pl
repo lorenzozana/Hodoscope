@@ -266,7 +266,7 @@ my @p30_Y = (  90., 120., 150.,  90., 120., 150.,  75., 105., 135.,  15.,  45., 
 my @q_X = (1., -1., -1.,  1.);
 my @q_Y = (1.,  1., -1., -1.);
 
-my $p_Ntiles = 29;
+my $p_Ntiles = 116;
 
 #0.000mm paint thickness tyles (and 0.0 air gap)
 #my @p_R	= (16.0507,15.4434,16.0507,14.8492,12.9035,15.4434,12.9035,10.6066,7.4246,15.6605,15.0748,15.0748,15.6605,12.8160,12.0934,12.0934,12.8160,10.0623,9.1241,9.1241,10.0623,8.5513,7.7217,7.1151,6.7915,6.7915,7.1151,7.7217,8.5513) ;
@@ -299,6 +299,10 @@ my @x_hodo_thin;
 my @y_hodo_thin;
 my @size_x_hodo_thin;
 my @size_y_hodo_thin;
+my @cutA_x_hodo_thin;
+my @cutA_y_hodo_thin;
+my @cutB_x_hodo_thin;
+my @cutB_y_hodo_thin;
 my @sector_hodo_thick;
 my @tyle_hodo_thick;
 my @tyleN_hodo_thick;
@@ -306,6 +310,10 @@ my @x_hodo_thick;
 my @y_hodo_thick;
 my @size_x_hodo_thick;
 my @size_y_hodo_thick;
+my @cutA_x_hodo_thick;
+my @cutA_y_hodo_thick;
+my @cutB_x_hodo_thick;
+my @cutB_y_hodo_thick;
 my $iter = 0;
 my $line;
 
@@ -321,6 +329,10 @@ while ($line = <FILE>) {
     push (@y_hodo_thin, $abc[4]);
     push (@size_x_hodo_thin, $abc[5]);
     push (@size_y_hodo_thin, $abc[6]);
+    push (@cutA_x_hodo_thin, $abc[7]);
+    push (@cutA_y_hodo_thin, $abc[8]);
+    push (@cutB_x_hodo_thin, $abc[9]);
+    push (@cutB_y_hodo_thin, $abc[10]);
 #    print "$sector_hodo_thin[$iter] \t $tyle_hodo_thin[$iter] \t $tyleN_hodo_thin[$iter] \t $x_hodo_thin[$iter] \t $y_hodo_thin[$iter] \t $size_x_hodo_thin[$iter] \t $size_y_hodo_thin[$iter]";
 
     $iter = $iter+1;
@@ -341,6 +353,10 @@ while ($line = <FILE>) {
     push (@y_hodo_thick, $abc[4]);
     push (@size_x_hodo_thick, $abc[5]);
     push (@size_y_hodo_thick, $abc[6]);
+    push (@cutA_x_hodo_thick, $abc[7]);
+    push (@cutA_y_hodo_thick, $abc[8]);
+    push (@cutB_x_hodo_thick, $abc[9]);
+    push (@cutB_y_hodo_thick, $abc[10]);
 #    print "$sector_hodo_thick[$iter] \t $tyle_hodo_thick[$iter] \t $tyleN_hodo_thick[$iter] \t $x_hodo_thick[$iter] \t $y_hodo_thick[$iter] \t $size_x_hodo_thick[$iter] \t $size_y_hodo_thick[$iter]";
 
     $iter = $iter+1;
@@ -1192,65 +1208,108 @@ sub make_ft_hodo
 	}
 	
 	my $l=0; # thick layer 
-	    my $p_X=0.;
-	    my $p_Y=0.;
-	    my $p_nsize_o = 0.;
-	    my $p_nsize_i = 0.;
-	    my $p_tsize_o = 0.;
-	    my @p_Z= ($LS_ZN[1]+$LS_TN[1] +$p15_WT[$l] ,$LS_ZN[1]-$LS_TN[1] -$p15_WT[$l]) ;
-	    my $p_i=0;
-	    my $p_sec=0;
-	    my $p_atsec=0;
-	    my $sec = 0;
-	    for ( my $q = 0; $q < 4; $q++ ) {
-		$p_sec = 0;		
-		for ( my $i = 0; $i < $p_Ntiles; $i++ ) {
-		    $p_atsec = $i + 1;
-		    if ($i >= 9) {
-			$p_sec = 1;
-			$p_atsec = $p_atsec - 9;
-		    }
-		    $p_i=($q+1)*100+$i+($l+1)*1000;
-		    $p_X = $p_R[$i] * sin($p_theta[$i]+pi/2.*$q) * 10.; # R is in cm
-		    $p_Y = $p_R[$i] * cos($p_theta[$i]+pi/2.*$q) * 10.; # R is in cm
-		    $sec = ($q*2+$p_sec)+1;
-		    print "$sec, \t P$p_size[$i], \t $p_atsec, \t $p_X,  \t $p_Y \n";
-		    $p_nsize_o = $p_size[$i] / 2. + $paint_thick; # outer layer with paint
-		    $p_nsize_i =  $p_size[$i] / 2.; # inner cube with scintillator
-		    $p_tsize_o = $p15_WT[$l] + $paint_thick; # thicness with paint 
-		    # define tile mother volume
-		    %detector = init_det();
-		    $detector{"name"}        = "ft_hodo_$p_i";
-		    $detector{"mother"}      = "ft_hodo";
-		    $detector{"description"} = "ft_hodo paint layer $l tyle $i rot $q";
-		    $detector{"pos"}         = "$p_X*mm $p_Y*mm $p_Z[$l]*mm";
-		    $detector{"rotation"}    = "0*deg 0*deg 0*deg";
-		    $detector{"color"}       = "3399FF";
-		    $detector{"type"}        = "Box";
-		    $detector{"dimensions"}  = "$p_nsize_o*mm $p_nsize_o*mm $p_tsize_o*mm";
-		    $detector{"material"}    = "tidioxi";
-		    $detector{"ncopy"}       = $p_i;
-		    $detector{"style"}       = 1;
-		    print_det(\%configuration, \%detector);
+	my $p_X=0.;
+	my $p_Y=0.;
+	my $p_nsize_ox = 0.;
+	my $p_nsize_oy = 0.;
+	my $p_nsize_ix = 0.;
+	my $p_nsize_iy = 0.;
+	my $p_tsize_o = 0.;
+	my @p_Z= ($LS_ZN[1]+$LS_TN[1] +$p15_WT[$l] ,$LS_ZN[1]-$LS_TN[1] -$p15_WT[$l]) ;
+	my $p_i=0;
+	my $p_sec=0;
+	my $p_atsec=0;
+	my $sec = 0;
+	for ( my $i = 0; $i < $p_Ntiles; $i++ ) {
+	    $p_i=$i+($l+1)*1000;
+	    $p_X = $x_hodo_thick[$i]; # R is in cm
+	    $p_Y = $y_hodo_thick[$i]; # R is in cm
+	    $sec = $sector_hodo_thick[$i];
+	    print "$sec, \t P$p_size[$i], \t $p_atsec, \t $p_X,  \t $p_Y \n";
+	    $p_nsize_ox = $size_x_hodo_thick[$i] / 2. + $paint_thick /10; # outer layer with paint
+	    $p_nsize_oy = $size_y_hodo_thick[$i] / 2. + $paint_thick /10; # outer layer with paint
+	    $p_nsize_ix = $size_x_hodo_thick[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
+	    $p_nsize_iy = $size_y_hodo_thick[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
+	    $p_tsize_o = $p15_WT[$l] + $paint_thick; # thicness with paint 
+	    # define tile mother volume
+	    %detector = init_det();
+	    $detector{"name"}        = "ft_hodo_$p_i";
+	    $detector{"mother"}      = "ft_hodo";
+	    $detector{"description"} = "ft_hodo paint layer $l tyle $i rot $q";
+	    $detector{"pos"}         = "$x_hodo_thick[$i]*cm $y_hodo_thick[$i]*cm $p_Z[$l]*mm";
+	    $detector{"rotation"}    = "0*deg 0*deg 0*deg";
+	    $detector{"color"}       = "3399FF";
+	    $detector{"type"}        = "Box";
+	    $detector{"dimensions"}  = "$p_nsize_ox*cm $p_nsize_oy*cm $p_tsize_o*mm";
+	    $detector{"material"}    = "tidioxi";
+	    $detector{"ncopy"}       = $p_i;
+	    $detector{"style"}       = 1;
+	    print_det(\%configuration, \%detector);
 
-		    %detector = init_det();
-		    $detector{"name"}        = "ft_hodo_tyle_$p_i";
-		    $detector{"mother"}      = "ft_hodo_$p_i";
-		    $detector{"description"} = "ft_hodo tyle layer $l tyle $i rot $q";
-		    $detector{"pos"}         = "0.0*mm 0.0*mm 0.0*mm";
-		    $detector{"rotation"}    = "0*deg 0*deg 0*deg";
-		    $detector{"color"}       = "BCA9F5";
-		    $detector{"type"}        = "Box";
-		    $detector{"dimensions"}  = "$p_nsize_i*mm $p_nsize_i*mm $p15_WT[$l]*mm";
-		    $detector{"material"}    = "eljen204";
-		    $detector{"style"}       = 1;
-		    $detector{"sensitivity"} = "ft_hodo";
-		    $detector{"hit_type"}    = "ft_hodo";
-		    $detector{"identifiers"} = "ih manual $l iv manual $q id manual $i";	
-		    print_det(\%configuration, \%detector);
-		    
-		}
-	    }
+	    %detector = init_det();
+	    $detector{"name"}        = "ft_hodo_tyle_$p_i";
+	    $detector{"mother"}      = "ft_hodo_$p_i";
+	    $detector{"description"} = "ft_hodo tyle layer $l tyle $i sec $sec";
+	    $detector{"pos"}         = "0.0*mm 0.0*mm 0.0*mm";
+	    $detector{"rotation"}    = "0*deg 0*deg 0*deg";
+	    $detector{"color"}       = "BCA9F5";
+	    $detector{"type"}        = "Box";
+	    $detector{"dimensions"}  = "$p_nsize_ix*cm $p_nsize_iy*cm $p15_WT[$l]*mm";
+	    $detector{"material"}    = "eljen204";
+	    $detector{"style"}       = 1;
+	    $detector{"sensitivity"} = "ft_hodo";
+	    $detector{"hit_type"}    = "ft_hodo";
+	    $detector{"identifiers"} = "ih manual $l iv manual $q id manual $i";	
+	    print_det(\%configuration, \%detector);
+	    
+	}
+
+	$l = 1;
+	for ( my $i = 0; $i < $p_Ntiles; $i++ ) {
+	    $p_i=$i+($l+1)*1000;
+	    $p_X = $x_hodo_thin[$i]; # R is in cm
+	    $p_Y = $y_hodo_thin[$i]; # R is in cm
+	    $sec = $sector_hodo_thin[$i];
+	    print "$sec, \t P$p_size[$i], \t $p_atsec, \t $p_X,  \t $p_Y \n";
+	    $p_nsize_ox = $size_x_hodo_thin[$i] / 2. + $paint_thick /10; # outer layer with paint
+	    $p_nsize_oy = $size_y_hodo_thin[$i] / 2. + $paint_thick /10; # outer layer with paint
+	    $p_nsize_ix = $size_x_hodo_thin[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
+	    $p_nsize_iy = $size_y_hodo_thin[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
+	    $p_tsize_o = $p15_WT[$l] + $paint_thick; # thicness with paint 
+	    # define tile mother volume
+	    %detector = init_det();
+	    $detector{"name"}        = "ft_hodo_$p_i";
+	    $detector{"mother"}      = "ft_hodo";
+	    $detector{"description"} = "ft_hodo paint layer $l tyle $i rot $q";
+	    $detector{"pos"}         = "$x_hodo_thin[$i]*cm $y_hodo_thin[$i]*cm $p_Z[$l]*mm";
+	    $detector{"rotation"}    = "0*deg 0*deg 0*deg";
+	    $detector{"color"}       = "3399FF";
+	    $detector{"type"}        = "Box";
+	    $detector{"dimensions"}  = "$p_nsize_ox*cm $p_nsize_oy*cm $p_tsize_o*mm";
+	    $detector{"material"}    = "tidioxi";
+	    $detector{"ncopy"}       = $p_i;
+	    $detector{"style"}       = 1;
+	    print_det(\%configuration, \%detector);
+
+	    %detector = init_det();
+	    $detector{"name"}        = "ft_hodo_tyle_$p_i";
+	    $detector{"mother"}      = "ft_hodo_$p_i";
+	    $detector{"description"} = "ft_hodo tyle layer $l tyle $i sec $sec";
+	    $detector{"pos"}         = "0.0*mm 0.0*mm 0.0*mm";
+	    $detector{"rotation"}    = "0*deg 0*deg 0*deg";
+	    $detector{"color"}       = "BCA9F5";
+	    $detector{"type"}        = "Box";
+	    $detector{"dimensions"}  = "$p_nsize_ix*cm $p_nsize_iy*cm $p15_WT[$l]*mm";
+	    $detector{"material"}    = "eljen204";
+	    $detector{"style"}       = 1;
+	    $detector{"sensitivity"} = "ft_hodo";
+	    $detector{"hit_type"}    = "ft_hodo";
+	    $detector{"identifiers"} = "ih manual $l iv manual $q id manual $i";	
+	    print_det(\%configuration, \%detector);
+	    
+	}
+
+
 }
 
 

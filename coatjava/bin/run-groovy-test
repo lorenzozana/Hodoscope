@@ -1,0 +1,28 @@
+#!/bin/bash
+CLARA_HOME=`dirname $0`/..
+DATAMINING=`dirname $0`/..
+CLAS12DIR=`dirname $0`/.. ; export CLAS12DIR
+ 
+CLARA_SERVICES=$CLAS12DIR/lib/services ; export CLARA_SERVICES
+
+#JYTHONPATH=${DATAMINING}/lib/jython
+#echo ${JYTHONPATH}
+
+#--------------------------------------------------------------
+# Adding supporting COAT jar files
+for i in `ls -a $DATAMINING/lib/tests/*.jar`
+do  
+echo "$i"
+if [ -z "${JYPATH}" ] ; then
+JYPATH="$i"
+else
+JYPATH=${JYPATH}:"$i"
+fi
+done 
+#-------------------------------------------------------------
+JYPATH=${JYPATH}:${DATAMINING}/lib/packages
+echo "*****************************************"
+echo "*    Running COAT-JAVA Groovy Scripts   *" 
+echo "*****************************************"
+echo " "
+groovy -cp "$JYPATH" $*

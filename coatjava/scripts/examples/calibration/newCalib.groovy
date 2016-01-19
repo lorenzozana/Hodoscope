@@ -1,0 +1,21 @@
+import org.jlab.clas12.calib.*;
+import java.awt.BorderLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.Map;
+import java.util.TreeMap;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import org.jlab.clasrec.main.DetectorCalibration;
+
+JFrame frame = new JFrame();
+DetectorShapeTabView  tab = new DetectorShapeTabView();
+DetectorCalibration calib = new DetectorCalibration("a","b","1.0");
+tab.initWith(calib);
+frame.add(tab);
+frame.pack();
+frame.setVisible(true);

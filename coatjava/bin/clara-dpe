@@ -1,0 +1,21 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Copyright (c) 10/2013 JSA: TJNAF DAQ Group. All rights reserved.
+# This software was developed under the United States Government license.
+# Initiated by V. Gyurjyan
+#
+#   clara-dpe
+#
+#   Starts CLARA DPE.
+#   author gurjyan
+#-----------------------------------------------------------------------------
+SCRIPT_DIR=`dirname $0`
+CLARA_SERVICES=$SCRIPT_DIR/../lib/services;export CLARA_SERVICES
+CLAS12DIR=$SCRIPT_DIR/.. ; export CLAS12DIR
+
+JVMOPTIONS="-d64 -Xmx8192m"
+
+CLASSPATH="$CLARA_SERVICES/.:$CLARA_SERVICES/lib/*:$CLARA_SERVICES/lib/clas/*:$CLAS12DIR/lib/clas/*"
+MAIN=org.jlab.coda.clara.dpe.CDPEnvironment
+
+java $JVMOPTIONS -cp $CLASSPATH $MAIN "$@"

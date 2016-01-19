@@ -1,0 +1,61 @@
+#!/bin/sh
+#-----------------------------------------------------------------------------
+# Copyright (c) 10/2013 JSA: TJNAF DAQ Group. All rights reserved.
+# This software was developed under the United States Government license.
+# Initiated by V. Gyurjyan
+#
+#   default-orchestrator
+#
+#   Simple orchestrator to deploy, link and run a chain of services
+#   in the local clara platform.
+#
+#   The user's chain of services will be linked to standard reader and writer:
+#
+#       R --> S1 --> S2 --> Sn --> W
+#
+#   author smancill
+#-----------------------------------------------------------------------------
+SCRIPTDIR=`dirname $0`
+CLARA_SERVICES=$SCRIPTDIR/../lib/services/ ; export CLARA_SERVICES
+JVMOPTIONS=""
+CLASSPATH="$CLARA_SERVICES/.:$CLARA_SERVICES/lib/*:lib/clas/*:lib/plugins/*"
+
+usage()
+{
+    cat << EOF
+usage: $(basename $0) setup-chain <services-file>
+   or: $(basename $0) run <input-file> <output-file> <threads>
+EOF
+}
+
+
+setup_chain()
+{
+    MAIN=std.orchestrators.DefaultDeploy
+    java $JVMOPTIONS -cp $CLASSPATH $MAIN "$@"
+}
+
+
+run_reconstruction()
+{
+    MAIN=std.orchestrators.DefaultOrchestrator
+
+    java $JVMOPTIONS -cp $CLASSPATH $MAIN "$@"
+}
+
+
+if [ "$#" = 0 ]; then
+    usage
+    exit 1
+fi
+
+if [ "$1" = "setup-chain" ]; then
+    shift
+    setup_chain "$@"
+elif [ "$1" = "run" ]; then
+    shift
+    run_reconstruction "$@"
+else
+    usage
+    exit 1
+fi
