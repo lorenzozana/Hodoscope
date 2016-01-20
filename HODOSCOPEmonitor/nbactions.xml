@@ -12,7 +12,7 @@
             <properties>
                 <exec.args>-classpath %classpath org.clas.viewer.FTHODOViewerModule</exec.args>
                 <exec.executable>java</exec.executable>
-                <Env.CLAS12DIR>/home/lzana/Hodo/Backup/coatjava/</Env.CLAS12DIR>
+                <Env.CLAS12DIR>/Users/lorenzozana/Hodoscope/Hodoscope/coatjava/</Env.CLAS12DIR>
             </properties>
         </action>
     </actions>
