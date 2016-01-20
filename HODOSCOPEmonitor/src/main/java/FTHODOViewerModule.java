@@ -149,24 +149,27 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     private void initDetector() {
 
         DetectorShapeView2D viewFTHODO = new DetectorShapeView2D("FTHODO");
+        double[] p_layer = {-180.0,180.0};
         double[] p_size = {15.0,30.0,15.0,30.0,30.0,30.0,30.0,30.0,15.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0};
         double[] p_R	= {16.2331,15.6642,16.2331,15.0076,13.0933,15.6642,13.0933,10.8102,7.5590,15.9022,15.3132,15.3132,15.9022,13.0258,12.2998,12.2998,13.0258,10.2395,9.2984,9.2984,10.2395,8.7322,7.8847,7.2650,6.9344,6.9344,7.2650,7.8847,8.7322};
         double[] p_theta = {-0.65294,-0.50511,-0.91786,-0.78540,-0.61741,-1.06568,-0.95339,-0.78540,-0.78540,-0.29005,-0.09916,0.09916,0.29005,-0.35667,-0.12357,0.12357,0.35667,-0.46024,-0.16377,0.16377,0.46024,-0.66118,-0.50722,-0.32184,-0.11069,0.11069,0.32184,0.50722,0.66118};
-        for (int sec_c=0; sec_c<4; sec_c++) {
+        for (int layer_c=0; layer_c<2; layer_c++){
+            for (int sec_c=0; sec_c<4; sec_c++) {
               
-            for (int component = 0; component < 29; component++) {
+                for (int component = 0; component < 29; component++) {
                 
-                int  iy = component / 22;
-                                int ix = component - iy * 22;
-                            double xcenter = p_R[component] * Math.sin(p_theta[component]+Math.PI /2 *sec_c)*10;
-                            double ycenter = p_R[component] * Math.cos(p_theta[component]+Math.PI /2 *sec_c)*10;
-                            DetectorShape2D shape = new DetectorShape2D(DetectorType.FTCAL, 0, 0, sec_c*29+component);
+                    int  iy = component / 22;
+                        int ix = component - iy * 22;
+                        double xcenter = p_R[component] * Math.sin(p_theta[component]+Math.PI /2 *sec_c)*10;
+                            double ycenter = p_R[component] * Math.cos(p_theta[component]+Math.PI /2 *sec_c)*10 +p_layer[layer_c];
+                            DetectorShape2D shape = new DetectorShape2D(DetectorType.FTCAL, 0, 0, layer_c*116+sec_c*29+component);
                             shape.createBarXY(p_size[component], p_size[component]);
                             shape.getShapePath().translateXYZ(xcenter, ycenter, 0.0);
                             shape.setColor(0, 145, 0);
                             viewFTHODO.addShape(shape);               
                 
-            }   
+                }   
+            }
         }
         this.view.addDetectorLayer(viewFTHODO);
         view.addDetectorListener(this);
@@ -184,7 +187,14 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     private void initHistograms() {
 
         for (int component = 0; component < 22 * 22; component++) {
-            
+                int ilayer = component/116 + 1;
+                String layer_s;
+                if (ilayer==1) {
+                    layer_s = "Thick";
+                }
+                else {
+                    layer_s = "Thin";
+                }
                 int iy = component / 29;
                 int ix = component - iy * 29;
                 int sec_a;
@@ -197,21 +207,21 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                     sec_a = iy*2 +2;
                     crys_a = ix + 1 -8;
                 }
-                String title = "Crystal " + component + " (sector" + sec_a + ", crystal" + crys_a + ")";
-                H_fADC.add(0, 0, component, new H1D(DetectorDescriptor.getName("fADC", sec_a,1,crys_a), title, 100, 0.0, 100.0));
-                H_NOISE.add(0, 0, component, new H1D(DetectorDescriptor.getName("Noise", sec_a,1,crys_a), title, 200, 0.0, 10.0));
+                String title = "Crystal " + component + " (layer" + ilayer + "(" + layer_s +"), sector" + sec_a + ", crystal" + crys_a + ")";
+                H_fADC.add(0, 0, component, new H1D(DetectorDescriptor.getName("fADC", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
+                H_NOISE.add(0, 0, component, new H1D(DetectorDescriptor.getName("Noise", sec_a,ilayer,crys_a), title, 200, 0.0, 10.0));
                 H_NOISE.get(0, 0, component).setFillColor(4);
                 H_NOISE.get(0, 0, component).setXTitle("RMS (mV)");
                 H_NOISE.get(0, 0, component).setYTitle("Counts");                        
-                H_WAVE.add(0, 0, component, new H1D(DetectorDescriptor.getName("WAVE", sec_a,1,crys_a), title, 100, 0.0, 100.0));
+                H_WAVE.add(0, 0, component, new H1D(DetectorDescriptor.getName("WAVE", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
                 H_WAVE.get(0, 0, component).setFillColor(5);
                 H_WAVE.get(0, 0, component).setXTitle("fADC Sample");
                 H_WAVE.get(0, 0, component).setYTitle("fADC Counts");
-                H_COSMIC_fADC.add(0, 0, component, new H1D(DetectorDescriptor.getName("Cosmic fADC", sec_a,1,crys_a), title, 100, 0.0, 100.0));
+                H_COSMIC_fADC.add(0, 0, component, new H1D(DetectorDescriptor.getName("Cosmic fADC", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
                 H_COSMIC_fADC.get(0, 0, component).setFillColor(3);
                 H_COSMIC_fADC.get(0, 0, component).setXTitle("fADC Sample");
                 H_COSMIC_fADC.get(0, 0, component).setYTitle("fADC Counts");
-                H_COSMIC_CHARGE.add(0, 0, component, new H1D(DetectorDescriptor.getName("Cosmic Charge", sec_a,1,crys_a), title, 80, 0.0, 80.0));
+                H_COSMIC_CHARGE.add(0, 0, component, new H1D(DetectorDescriptor.getName("Cosmic Charge", sec_a,ilayer,crys_a), title, 80, 0.0, 80.0));
                 H_COSMIC_CHARGE.get(0, 0, component).setFillColor(2);
                 H_COSMIC_CHARGE.get(0, 0, component).setXTitle("Charge (pC)");
                 H_COSMIC_CHARGE.get(0, 0, component).setYTitle("Counts");
