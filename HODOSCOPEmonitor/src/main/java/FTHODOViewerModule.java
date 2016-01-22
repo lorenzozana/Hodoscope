@@ -303,7 +303,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
             int key = counter.getDescriptor().getComponent();
             int sec_k = counter.getDescriptor().getSector();
             int layer_k = counter.getDescriptor().getLayer();
-            int sector_count[] = {9,29,38,58,67,87,96,116};
+            int sector_count[] = {0,9,29,38,58,67,87,96};
             int adcN_k = (layer_k -1 ) *116+sector_count[sec_k-1]+key;
 //             System.out.println(counters.size() + " " + icounter + " " + counter.getDescriptor().getComponent());
 //             System.out.println(counter);
@@ -345,9 +345,10 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         int sector = shape.getDescriptor().getSector();
         int layer = shape.getDescriptor().getLayer();
         int paddle = shape.getDescriptor().getComponent();
-        int sector_count[] = {9,29,38,58,67,87,96,116};
+        int sector_count[] = {0,9,29,38,58,67,87,96};
         int adcN_k = (layer -1 ) *116+sector_count[sector-1]+paddle;
         //shape.setColor(200, 200, 200);
+   //     System.out.println("Bin Content n" +adcN_k + "="+ H_WMAX.getBinContent(adcN_k));
         if(plotSelect==0) {
             if(H_WMAX.getBinContent(adcN_k)>threshold) {
                 shape.setColor(200, 0, 200);
