@@ -292,17 +292,18 @@ my @p_theta = (-0.65294,-0.50511,-0.91786,-0.78540,-0.61741,-1.06568,-0.95339,-0
 ### reading the coordinates from two text files, hodo_position_thin.txt and hodo_position_thick.txt
 #############
 my @abc;
-my @sector_hodo_thin;
-my @tyle_hodo_thin;
-my @tyleN_hodo_thin;
-my @x_hodo_thin;
-my @y_hodo_thin;
-my @size_x_hodo_thin;
-my @size_y_hodo_thin;
-my @cutA_x_hodo_thin;
-my @cutA_y_hodo_thin;
-my @cutB_x_hodo_thin;
-my @cutB_y_hodo_thin;
+my @layer_hodo;
+my @sector_hodo;
+my @tyle_hodo;
+my @tyleN_hodo;
+my @x_hodo;
+my @y_hodo;
+my @size_x_hodo;
+my @size_y_hodo;
+my @cutA_x_hodo;
+my @cutA_y_hodo;
+my @cutB_x_hodo;
+my @cutB_y_hodo;
 my @sector_hodo_thick;
 my @tyle_hodo_thick;
 my @tyleN_hodo_thick;
@@ -318,22 +319,23 @@ my $iter = 0;
 my $line;
 
 
-open (FILE,"hodo_position_thin.txt");
+open (FILE,"hodo_position.txt");
 while ($line = <FILE>) {
 
     @abc = split '\t', $line;
-    $sector_hodo_thin[$iter] = substr($line,0,1);
-    push (@tyle_hodo_thin,$abc[1]);
-    push (@tyleN_hodo_thin,$abc[2]);
-    push (@x_hodo_thin, $abc[3]);
-    push (@y_hodo_thin, $abc[4]);
-    push (@size_x_hodo_thin, $abc[5]);
-    push (@size_y_hodo_thin, $abc[6]);
-    push (@cutA_x_hodo_thin, $abc[7]);
-    push (@cutA_y_hodo_thin, $abc[8]);
-    push (@cutB_x_hodo_thin, $abc[9]);
-    push (@cutB_y_hodo_thin, $abc[10]);
-#    print "$sector_hodo_thin[$iter] \t $tyle_hodo_thin[$iter] \t $tyleN_hodo_thin[$iter] \t $x_hodo_thin[$iter] \t $y_hodo_thin[$iter] \t $size_x_hodo_thin[$iter] \t $size_y_hodo_thin[$iter]";
+    $layer_hodo[$iter] = substr($line,0,1);
+    push (@sector_hodo,$abc[1]);
+    push (@tyle_hodo,$abc[2]);
+    push (@tyleN_hodo,$abc[3]);
+    push (@x_hodo, $abc[4]);
+    push (@y_hodo, $abc[5]);
+    push (@size_x_hodo, $abc[6]);
+    push (@size_y_hodo, $abc[7]);
+    push (@cutA_x_hodo, $abc[8]);
+    push (@cutA_y_hodo, $abc[9]);
+    push (@cutB_x_hodo, $abc[10]);
+    push (@cutB_y_hodo, $abc[11]);
+#    print "$sector_hodo[$iter] \t $tyle_hodo[$iter] \t $tyleN_hodo[$iter] \t $x_hodo[$iter] \t $y_hodo[$iter] \t $size_x_hodo[$iter] \t $size_y_hodo[$iter]";
 
     $iter = $iter+1;
 
@@ -1220,23 +1222,24 @@ sub make_ft_hodo
 	my $p_sec=0;
 	my $p_atsec=0;
 	my $sec = 0;
-	for ( my $i = 0; $i < $p_Ntiles; $i++ ) {
+	for ( my $i = 116; $i < $p_Ntiles+116; $i++ ) {
+	    $j = $i-116;
 	    $p_i=$i+($l+1)*1000;
-	    $p_X = $x_hodo_thick[$i]; # R is in cm
-	    $p_Y = $y_hodo_thick[$i]; # R is in cm
-	    $sec = $sector_hodo_thick[$i];
+	    $p_X = $x_hodo[$i]; # R is in cm
+	    $p_Y = $y_hodo[$i]; # R is in cm
+	    $sec = $sector_hodo[$i];
 	    print "$sec, \t P$p_size[$i], \t $p_atsec, \t $p_X,  \t $p_Y \n";
-	    $p_nsize_ox = $size_x_hodo_thick[$i] / 2. + $paint_thick /10; # outer layer with paint
-	    $p_nsize_oy = $size_y_hodo_thick[$i] / 2. + $paint_thick /10; # outer layer with paint
-	    $p_nsize_ix = $size_x_hodo_thick[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
-	    $p_nsize_iy = $size_y_hodo_thick[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
+	    $p_nsize_ox = $size_x_hodo[$i] / 2. + $paint_thick /10; # outer layer with paint
+	    $p_nsize_oy = $size_y_hodo[$i] / 2. + $paint_thick /10; # outer layer with paint
+	    $p_nsize_ix = $size_x_hodo[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
+	    $p_nsize_iy = $size_y_hodo[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
 	    $p_tsize_o = $p15_WT[$l] + $paint_thick; # thicness with paint 
 	    # define tile mother volume
 	    %detector = init_det();
 	    $detector{"name"}        = "ft_hodo_$p_i";
 	    $detector{"mother"}      = "ft_hodo";
 	    $detector{"description"} = "ft_hodo paint layer $l tyle $i rot $q";
-	    $detector{"pos"}         = "$x_hodo_thick[$i]*cm $y_hodo_thick[$i]*cm $p_Z[$l]*mm";
+	    $detector{"pos"}         = "$x_hodo[$i]*cm $y_hodo[$i]*cm $p_Z[$l]*mm";
 	    $detector{"rotation"}    = "0*deg 0*deg 0*deg";
 	    $detector{"color"}       = "3399FF";
 	    $detector{"type"}        = "Box";
@@ -1267,21 +1270,21 @@ sub make_ft_hodo
 	$l = 1;
 	for ( my $i = 0; $i < $p_Ntiles; $i++ ) {
 	    $p_i=$i+($l+1)*1000;
-	    $p_X = $x_hodo_thin[$i]; # R is in cm
-	    $p_Y = $y_hodo_thin[$i]; # R is in cm
-	    $sec = $sector_hodo_thin[$i];
+	    $p_X = $x_hodo[$i]; # R is in cm
+	    $p_Y = $y_hodo[$i]; # R is in cm
+	    $sec = $sector_hodo[$i];
 	    print "$sec, \t P$p_size[$i], \t $p_atsec, \t $p_X,  \t $p_Y \n";
-	    $p_nsize_ox = $size_x_hodo_thin[$i] / 2. + $paint_thick /10; # outer layer with paint
-	    $p_nsize_oy = $size_y_hodo_thin[$i] / 2. + $paint_thick /10; # outer layer with paint
-	    $p_nsize_ix = $size_x_hodo_thin[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
-	    $p_nsize_iy = $size_y_hodo_thin[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
+	    $p_nsize_ox = $size_x_hodo[$i] / 2. + $paint_thick /10; # outer layer with paint
+	    $p_nsize_oy = $size_y_hodo[$i] / 2. + $paint_thick /10; # outer layer with paint
+	    $p_nsize_ix = $size_x_hodo[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
+	    $p_nsize_iy = $size_y_hodo[$i] / 2. + $paint_thick /10;  # inner cube with scintillator
 	    $p_tsize_o = $p15_WT[$l] + $paint_thick; # thicness with paint 
 	    # define tile mother volume
 	    %detector = init_det();
 	    $detector{"name"}        = "ft_hodo_$p_i";
 	    $detector{"mother"}      = "ft_hodo";
 	    $detector{"description"} = "ft_hodo paint layer $l tyle $i rot $q";
-	    $detector{"pos"}         = "$x_hodo_thin[$i]*cm $y_hodo_thin[$i]*cm $p_Z[$l]*mm";
+	    $detector{"pos"}         = "$x_hodo[$i]*cm $y_hodo[$i]*cm $p_Z[$l]*mm";
 	    $detector{"rotation"}    = "0*deg 0*deg 0*deg";
 	    $detector{"color"}       = "3399FF";
 	    $detector{"type"}        = "Box";
