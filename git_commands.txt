@@ -1,0 +1,36 @@
+-get the git repository
+git clone https://github.com/lorenzozana/EdGen.git
+
+-get changes from web repository
+git pull
+
+-change branch
+git checkout Development
+git chekout master
+
+-change and create branch
+git checkout -b Development2
+
+-check status of branch
+git status
+
+-commit changes local repository
+git commit -a -m "comment"
+
+-commit changes in the web reposotory
+git push
+
+-check differences between branches
+git diff master Development
+
+-merge Development branch into master after testing (this will overwrite master with Development)
+git checkout Development
+git merge -s ours master
+git checkout master
+git merge Development
+
+-merging tools (this will open applications like vimdiff, check for commands before) if you want to do a more involving merging. One can also setup which merging tool to use
+git mergetool 
+
+A more detailed info on how to run git and suggestions can be found at (normal CLAS password):
+https://wiki.ge.infn.it/haspect/index.php/GithubIntroduction
