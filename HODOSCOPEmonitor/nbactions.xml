@@ -10,9 +10,38 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-classpath %classpath org.clas.viewer.FTHODOViewerModule</exec.args>
+                <exec.args>-DCLAS12DIR=/Users/nickzachariou/EdinPostdoc/Hodoscope/coatjava -classpath %classpath org.clas.viewer.FTHODOViewerModule</exec.args>
                 <exec.executable>java</exec.executable>
-                <Env.CLAS12DIR>/home/lzana/Hodo/Backup/coatjava/</Env.CLAS12DIR>
+                <Env.CLAS12DIR>/Users/nickzachariou/EdinPostdoc/Hodoscope/coatjava</Env.CLAS12DIR>
+            </properties>
+        </action>
+        <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -DCLAS12DIR=/Users/nickzachariou/EdinPostdoc/Hodoscope/coatjava -classpath %classpath org.clas.viewer.FTHODOViewerModule</exec.args>
+                <exec.executable>java</exec.executable>
+                <jpda.listen>true</jpda.listen>
+            </properties>
+        </action>
+        <action>
+            <actionName>profile</actionName>
+            <packagings>
+                <packaging>jar</packaging>
+            </packagings>
+            <goals>
+                <goal>process-classes</goal>
+                <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+            </goals>
+            <properties>
+                <exec.args>-DCLAS12DIR=/Users/nickzachariou/EdinPostdoc/Hodoscope/coatjava -classpath %classpath org.clas.viewer.FTHODOViewerModule</exec.args>
+                <exec.executable>java</exec.executable>
             </properties>
         </action>
     </actions>
