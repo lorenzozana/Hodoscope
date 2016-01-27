@@ -1,3 +1,6 @@
+To subscribe to updates from this repository, please go to:
+https://mailman.jlab.org/mailman/listinfo/software_hodo
+
 -get the git repository
 git clone https://github.com/lorenzozana/EdGen.git
 
