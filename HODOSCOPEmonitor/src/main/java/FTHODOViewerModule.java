@@ -62,10 +62,8 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     double[] cosmicCharge;
     int[] crystalPointers;
     
-    
-    
-    
-    int threshold = 25; // 10 fADC value <-> ~ 5mV
+    // fADC have 4096 bins and the range is 0.0 to 2.0 V (for run > 230 )
+    int threshold = 1000; // 1000 = 500 mV
     int ped_i1 = 4;
     int ped_i2 = 24;
     int pul_i1 = 30;
@@ -139,15 +137,25 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     }
 
     private void initDetector() {
-
+	
         DetectorShapeView2D viewFTHODO = new DetectorShapeView2D("FTHODO");
         int sec_a;
         int crys_a;
-        double[] p_layer = {180.0,-180.0};
-        double[] v_layer = {-1.0,1.0};
-        double[] p_size = {15.0,30.0,15.0,30.0,30.0,30.0,30.0,30.0,15.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0};
-        double[] p_R	= {16.2331,15.6642,16.2331,15.0076,13.0933,15.6642,13.0933,10.8102,7.5590,15.9022,15.3132,15.3132,15.9022,13.0258,12.2998,12.2998,13.0258,10.2395,9.2984,9.2984,10.2395,8.7322,7.8847,7.2650,6.9344,6.9344,7.2650,7.8847,8.7322};
-        double[] p_theta = {-0.65294,-0.50511,-0.91786,-0.78540,-0.61741,-1.06568,-0.95339,-0.78540,-0.78540,-0.29005,-0.09916,0.09916,0.29005,-0.35667,-0.12357,0.12357,0.35667,-0.46024,-0.16377,0.16377,0.46024,-0.66118,-0.50722,-0.32184,-0.11069,0.11069,0.32184,0.50722,0.66118};
+        
+	// position of layer in y-direction
+	// move (correctly labelled) thin layer to top
+	double[] p_layer = {-180.0,180.0};
+        // flip the (correctly labelled) thick layer
+	double[] v_layer = {1.0,-1.0};
+        double[] p_size = {15.0,30.0,15.0,30.0,30.0,30.0,30.0,30.0,15.0,
+			   30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,30.0,
+			   30.0,30.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0,15.0};
+        double[] p_R	= {16.2331,15.6642,16.2331,15.0076,13.0933,15.6642,13.0933,10.8102,7.5590,
+			   15.9022,15.3132,15.3132,15.9022,13.0258,12.2998,12.2998,13.0258,10.2395,9.2984,
+			   9.2984,10.2395,8.7322,7.8847,7.2650,6.9344,6.9344,7.2650,7.8847,8.7322};
+        double[] p_theta = {-0.65294,-0.50511,-0.91786,-0.78540,-0.61741,-1.06568,-0.95339,-0.78540,-0.78540,
+			    -0.29005,-0.09916,0.09916,0.29005,-0.35667,-0.12357,0.12357,0.35667,-0.46024,-0.16377,
+			    0.16377,0.46024,-0.66118,-0.50722,-0.32184,-0.11069,0.11069,0.32184,0.50722,0.66118};
         for (int layer_c=0; layer_c<2; layer_c++){
             for (int sec_c=0; sec_c<4; sec_c++) {
                 
@@ -160,14 +168,14 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                         sec_a = sec_c*2 +2;
                         crys_a = component + 1 -9;
                     }
-                        double xcenter = v_layer[layer_c] * p_R[component] * Math.sin(p_theta[component]+Math.PI /2 *sec_c)*10;
-                            double ycenter = -p_R[component] * Math.cos(p_theta[component]+Math.PI /2 *sec_c)*10 +p_layer[layer_c];
-                            DetectorShape2D shape = new DetectorShape2D(DetectorType.FTOF, sec_a, layer_c+1,crys_a);
-                            shape.createBarXY(p_size[component], p_size[component]);
-                            shape.getShapePath().translateXYZ(xcenter, ycenter, 0.0);
-                            shape.setColor(0, 145, 0);
-                            viewFTHODO.addShape(shape);               
-                
+		    double xcenter = v_layer[layer_c] * p_R[component] * Math.sin(p_theta[component]+Math.PI /2 *sec_c)*10;
+		    double ycenter = -p_R[component] * Math.cos(p_theta[component]+Math.PI /2 *sec_c)*10 +p_layer[layer_c];
+		    DetectorShape2D shape = new DetectorShape2D(DetectorType.FTOF, sec_a, layer_c+1,crys_a);
+		    shape.createBarXY(p_size[component], p_size[component]);
+		    shape.getShapePath().translateXYZ(xcenter, ycenter, 0.0);
+		    shape.setColor(0, 145, 0);
+		    viewFTHODO.addShape(shape);               
+		    
                 }   
             }
         }
@@ -189,18 +197,26 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         for (int component = 0; component < 232; component++) {
                 int ilayer = component/116 + 1;
                 String layer_s;
-                if (ilayer==1) {
-                    layer_s = "Thick";
-                }
-                else {
+                //  layer_s was the wrong way round and has now been switched
+		if (ilayer==1) {
                     layer_s = "Thin";
                 }
-                int iy = (component-(ilayer-1)*116) / 29;
+                else {
+                    layer_s = "Thick";
+                }
+                // (map components in both layers to [0,115]) 
+		// map components to quadrants [0,3] 
+		int iy = (component-(ilayer-1)*116) / 29;
+		// map components to [0,28] 
                 int ix = component - iy * 29 -(ilayer-1)*116;
-                int sec_a;
+		
+		// map iy to sectors [1,8]
+		int sec_a;
+		// map ix to crystals [1,9] or
+		// map ix to crystals [1,20]
                 int crys_a;
                 if (ix<9) {
-                    sec_a = iy*2 +1;
+		    sec_a = iy*2 +1;
                     crys_a = ix + 1;
                 }
                 else {
@@ -321,7 +337,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     //            System.out.println("   Component #" + key + " is above threshold, max=" + fadcFitter.getWave_Max() + " ped=" + fadcFitter.getPedestal());
             H_NOISE.get(sec_k, layer_k, key).fill(fadcFitter.getRMS());
         }
-        
+	
         if (plotSelect == 0 && H_WAVE.hasEntry(secSelect, layerSelect, keySelect)) {
             this.canvas.draw(H_WAVE.get(secSelect, layerSelect, keySelect));            
         }
