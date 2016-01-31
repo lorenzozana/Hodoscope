@@ -158,7 +158,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
 			    0.16377,0.46024,-0.66118,-0.50722,-0.32184,-0.11069,0.11069,0.32184,0.50722,0.66118};
         for (int layer_c=0; layer_c<2; layer_c++){
             for (int sec_c=0; sec_c<4; sec_c++) {
-                
+		
                 for (int component = 0; component < 29; component++) {
                     if (component<9) {
                         sec_a = sec_c*2 +1;
@@ -191,6 +191,8 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                         pul_i2 // last bin for pulse integral
                 ));
     }
+    
+        
 
     private void initHistograms() {
 
@@ -305,7 +307,29 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         return crystalExist;
     }
     
+    private int matchingElement(int element, int sector) {
+	
+        int   mirroringElement = 0;
+	int[] elementsOdd      = {3,6,1,4,7,2,5,8,9};
+	int[] elementsEven     = {4,3,2,1,8,7,6,5,12,11,10,9,20,19,18,17,16,15,14,13};
+	
+	if(sector%2==0)
+	    mirroringElement = elementsEven[element-1];
+	else
+	    mirroringElement = elementsOdd[element-1];
+	
+	return mirroringElement;
+    }
     
+    private int matchingSector(int sector) {
+	
+	int mirroringSector = 0;
+	int [] mirroredSectors = {3,2,1,8,7,6,5,4};
+	
+	mirroringSector = mirroredSectors[sector-1]; 
+	return mirroringSector;
+    }
+        
     public void processEvent(DataEvent de) {
         EvioDataEvent event = (EvioDataEvent) de;
 
@@ -338,9 +362,16 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
             H_NOISE.get(sec_k, layer_k, key).fill(fadcFitter.getRMS());
         }
 	
-        if (plotSelect == 0 && H_WAVE.hasEntry(secSelect, layerSelect, keySelect)) {
-            this.canvas.draw(H_WAVE.get(secSelect, layerSelect, keySelect));            
-        }
+	if (plotSelect == 0 ) {
+            this.canvas.divide(1, 2);
+	    canvas.cd(layerSelect-1);
+	    if(H_WAVE.hasEntry(secSelect,layerSelect,keySelect))
+		this.canvas.draw(H_WAVE.get(secSelect,layerSelect,keySelect));
+	    canvas.cd(layerSelect%2);
+	    if(H_WAVE.hasEntry(matchingSector(secSelect),(layerSelect%2)+1, matchingElement(keySelect,secSelect)))
+		this.canvas.draw(H_WAVE.get(matchingSector(secSelect),(layerSelect%2)+1, matchingElement(keySelect,secSelect)));            
+	}
+	
         //this.dcHits.show();
         this.view.repaint();
     }
@@ -350,12 +381,17 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         keySelect = desc.getComponent();
         secSelect = desc.getSector();
         layerSelect = desc.getLayer();
-        System.out.println("Sector=" + secSelect + " Layer=" +layerSelect + " Component=" + keySelect);
-        if (plotSelect == 0) {
-            this.canvas.divide(1, 1);
-            canvas.cd(0);
-            canvas.draw(H_WAVE.get(secSelect, layerSelect, keySelect));
-        }
+        //System.out.println("Sector=" + secSelect + " Layer=" +layerSelect + " Component=" + keySelect);
+	
+	if (plotSelect == 0 ) {
+            this.canvas.divide(1, 2);
+	    canvas.cd(layerSelect-1);
+	    if(H_WAVE.hasEntry(secSelect,layerSelect,keySelect))
+		this.canvas.draw(H_WAVE.get(secSelect,layerSelect,keySelect));
+	    canvas.cd(layerSelect%2);
+	    if(H_WAVE.hasEntry(matchingSector(secSelect),(layerSelect%2)+1, matchingElement(keySelect,secSelect)))
+		this.canvas.draw(H_WAVE.get(matchingSector(secSelect),(layerSelect%2)+1, matchingElement(keySelect,secSelect)));            
+	}
     }
 
     public void update(DetectorShape2D shape) {
