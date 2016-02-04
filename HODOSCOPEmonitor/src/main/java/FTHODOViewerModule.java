@@ -49,6 +49,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
 
     DetectorCollection<H1D> H_fADC = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_WAVE = new DetectorCollection<H1D>();
+    DetectorCollection<H1D> H_NPE = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_NOISE = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_COSMIC_fADC   = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_COSMIC_CHARGE = new DetectorCollection<H1D>();
@@ -201,10 +202,10 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                 String layer_s;
                 //  layer_s was the wrong way round and has now been switched
 		if (ilayer==1) {
-                    layer_s = "Thin";
+                    layer_s = "thin";
                 }
                 else {
-                    layer_s = "Thick";
+                    layer_s = "thick";
                 }
                 // (map components in both layers to [0,115]) 
 		// map components to quadrants [0,3] 
@@ -225,7 +226,15 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                     sec_a = iy*2 +2;
                     crys_a = ix + 1 -9;
                 }
-                String title = "Crystal " + component + " (layer" + ilayer + "(" + layer_s +"), sector" + sec_a + ", crystal" + crys_a + ")";
+		
+		String title;
+		    
+		// The thick layer titles are written as if the numbers match the thin layer looking downstream
+		if(ilayer==1)
+		    title =  " " +layer_s +" layer, sector" + sec_a + ", crystal" + crys_a ;
+		else
+		    title =  " " + layer_s +" layer, sector" + matchingSector(sec_a) + ", crystal" + matchingElement(crys_a,sec_a);
+		
                 H_fADC.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("fADC", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
                 H_NOISE.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("Noise", sec_a,ilayer,crys_a), title, 200, 0.0, 10.0));
                 H_NOISE.get(sec_a,ilayer, crys_a).setFillColor(4);
@@ -235,7 +244,13 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                 H_WAVE.get(sec_a,ilayer, crys_a).setFillColor(5);
                 H_WAVE.get(sec_a,ilayer, crys_a).setXTitle("fADC Sample");
                 H_WAVE.get(sec_a,ilayer, crys_a).setYTitle("fADC Counts");
-                H_COSMIC_fADC.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("Cosmic fADC", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
+                
+		H_NPE.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("NPE", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
+                H_NPE.get(sec_a,ilayer, crys_a).setFillColor(5);
+                H_NPE.get(sec_a,ilayer, crys_a).setXTitle("Time");
+                H_NPE.get(sec_a,ilayer, crys_a).setYTitle("Number of photoelectrons");
+                
+		H_COSMIC_fADC.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("Cosmic fADC", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
                 H_COSMIC_fADC.get(sec_a,ilayer, crys_a).setFillColor(3);
                 H_COSMIC_fADC.get(sec_a,ilayer, crys_a).setXTitle("fADC Sample");
                 H_COSMIC_fADC.get(sec_a,ilayer, crys_a).setYTitle("fADC Counts");
@@ -313,10 +328,12 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
 	int[] elementsOdd      = {3,6,1,4,7,2,5,8,9};
 	int[] elementsEven     = {4,3,2,1,8,7,6,5,12,11,10,9,20,19,18,17,16,15,14,13};
 	
-	if(sector%2==0)
-	    mirroringElement = elementsEven[element-1];
-	else
-	    mirroringElement = elementsOdd[element-1];
+	if(sector!=0){
+	    if(sector%2==0)
+		mirroringElement = elementsEven[element-1];
+	    else
+ 	    mirroringElement = elementsOdd[element-1];
+	}
 	
 	return mirroringElement;
     }
@@ -324,9 +341,11 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     private int matchingSector(int sector) {
 	
 	int mirroringSector = 0;
-	int [] mirroredSectors = {3,2,1,8,7,6,5,4};
+ 	int [] mirroredSectors = {3,2,1,8,7,6,5,4};
 	
-	mirroringSector = mirroredSectors[sector-1]; 
+	if(sector!=0)
+	    mirroringSector = mirroredSectors[sector-1]; 
+	
 	return mirroringSector;
     }
         
