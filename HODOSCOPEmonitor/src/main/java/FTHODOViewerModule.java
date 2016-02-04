@@ -64,7 +64,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     int[] crystalPointers;
     
     // fADC have 4096 bins and the range is 0.0 to 2.0 V (for run > 230 )
-    int threshold = 1000; // 1000 = 500 mV
+    int threshold = 1500; // 1000 = 500 mV
     int ped_i1 = 4;
     int ped_i2 = 24;
     int pul_i1 = 30;

@@ -35,5 +35,9 @@ git merge Development
 -merging tools (this will open applications like vimdiff, check for commands before) if you want to do a more involving merging. One can also setup which merging tool to use
 git mergetool 
 
+--overwrite local changes on master branch from remote (on github.com) repository:
+-git fetch --all
+-git reset --hard origin/master
+
 A more detailed info on how to run git and suggestions can be found at (normal CLAS password):
 https://wiki.ge.infn.it/haspect/index.php/GithubIntroduction
