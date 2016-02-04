@@ -171,7 +171,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                     }
 		    double xcenter = v_layer[layer_c] * p_R[component] * Math.sin(p_theta[component]+Math.PI /2 *sec_c)*10;
 		    double ycenter = -p_R[component] * Math.cos(p_theta[component]+Math.PI /2 *sec_c)*10 +p_layer[layer_c];
-		    DetectorShape2D shape = new DetectorShape2D(DetectorType.FTOF, sec_a, layer_c+1,crys_a);
+		    DetectorShape2D shape = new DetectorShape2D(DetectorType.FTHODO, sec_a, layer_c+1,crys_a);
 		    shape.createBarXY(p_size[component], p_size[component]);
 		    shape.getShapePath().translateXYZ(xcenter, ycenter, 0.0);
 		    shape.setColor(0, 145, 0);
@@ -185,7 +185,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     }
 
     private void initRawDataDecoder() {
-        decoder.addFitter(DetectorType.FTOF,
+        decoder.addFitter(DetectorType.FTHODO,
                 new FADCBasicFitter(ped_i1, // first bin for pedestal
                         ped_i2, // last bin for pedestal
                         pul_i1, // first bin for pulse integral
@@ -355,7 +355,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         decoder.decode(event);
         nProcessed++;
         System.out.println("event #: " + nProcessed);
-        List<DetectorCounter> counters = decoder.getDetectorCounters(DetectorType.FTOF);
+        List<DetectorCounter> counters = decoder.getDetectorCounters(DetectorType.FTHODO);
         FTHODOViewerModule.MyADCFitter fadcFitter = new FTHODOViewerModule.MyADCFitter();
         H_WMAX.reset();
         for (DetectorCounter counter : counters) {
@@ -440,7 +440,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     }
 
     public DetectorType getType() {
-        return DetectorType.FTOF;
+        return DetectorType.FTHODO;
     }
 
     public String getDescription() {
