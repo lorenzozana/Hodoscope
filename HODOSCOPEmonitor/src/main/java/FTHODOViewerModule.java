@@ -50,11 +50,19 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         //histogram definition
     DetectorCollection<H1D> H_fADC = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_WAVE = new DetectorCollection<H1D>();
+    DetectorCollection<H1D> H_CWAVE = new DetectorCollection<H1D>();
+    DetectorCollection<H1D> H_FADCSAMPLE = new DetectorCollection<H1D>();
+    DetectorCollection<H1D> H_FADCSAMPLEdiff = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_NPE = new DetectorCollection<H1D>();
+    DetectorCollection<H1D> H_WMAXALL = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_NOISE = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_COSMIC_fADC   = new DetectorCollection<H1D>();
     DetectorCollection<H1D> H_COSMIC_CHARGE = new DetectorCollection<H1D>();
     DetectorCollection<F1D> mylandau = new DetectorCollection<F1D>();
+    DetectorCollection<F1D> mygauss = new DetectorCollection<F1D>();
+
+    
+    
     H1D H_fADC_N = null;
     H1D H_WMAX   = null;
     H1D H_COSMIC_N = null;
@@ -67,6 +75,8 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
     int threshold = 1000; // 1000 = 500 mV
     int ped_i1 = 4;
     int ped_i2 = 24;
+    int ped_j1 = 79;
+    int ped_j2 = 99;
     int pul_i1 = 30;
     int pul_i2 = 70;
     double LSB = 0.4884;
@@ -107,18 +117,38 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         resetBtn.addActionListener(this);
         buttonPane.add(resetBtn);
         
-        
-        
         JRadioButton wavesRb  = new JRadioButton("Waveforms");
-        
+        JRadioButton wavesMaxRb  = new JRadioButton("Waveform Amplitute");
+        JRadioButton fadcsampleRb  = new JRadioButton("fADC time");
+        JRadioButton fitRb  = new JRadioButton("Fit Timing");
+        JRadioButton cWavesRb  = new JRadioButton("Calibrated");
+
         ButtonGroup group = new ButtonGroup();
+
+        group.add(fitRb);
+        buttonPane.add(fitRb);
+        fitRb.setSelected(true);
+        fitRb.addActionListener(this);
+        
+        group.add(wavesMaxRb);
+        buttonPane.add(wavesMaxRb);
+        wavesMaxRb.setSelected(true);
+        wavesMaxRb.addActionListener(this);
+        
+        group.add(fadcsampleRb);
+        buttonPane.add(fadcsampleRb);
+        fadcsampleRb.setSelected(true);
+        fadcsampleRb.addActionListener(this);
+    
         group.add(wavesRb);
-        
         buttonPane.add(wavesRb);
-        
         wavesRb.setSelected(true);
         wavesRb.addActionListener(this);
         
+        group.add(cWavesRb);
+        buttonPane.add(cWavesRb);
+        cWavesRb.setSelected(true);
+        cWavesRb.addActionListener(this);
         
         canvasPane.add(this.canvas, BorderLayout.CENTER);
         canvasPane.add(buttonPane, BorderLayout.PAGE_END);
@@ -230,10 +260,36 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
             H_NOISE.get(sec_a,ilayer, crys_a).setFillColor(4);
             H_NOISE.get(sec_a,ilayer, crys_a).setXTitle("RMS (mV)");
             H_NOISE.get(sec_a,ilayer, crys_a).setYTitle("Counts");
+            
             H_WAVE.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("WAVE", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
             H_WAVE.get(sec_a,ilayer, crys_a).setFillColor(5);
             H_WAVE.get(sec_a,ilayer, crys_a).setXTitle("fADC Sample");
             H_WAVE.get(sec_a,ilayer, crys_a).setYTitle("fADC Counts");
+
+            H_CWAVE.add(sec_a,ilayer, crys_a,
+                        new H1D(DetectorDescriptor.getName("CalibratedWAVE",
+                                                           sec_a,ilayer,crys_a),
+                                title, 100, 0.0, 400.0));
+            H_CWAVE.get(sec_a,ilayer, crys_a).setFillColor(5);
+            H_CWAVE.get(sec_a,ilayer, crys_a).setXTitle("Time (ns)");
+            H_CWAVE.get(sec_a,ilayer, crys_a).setYTitle("Voltage (mV)");
+            
+            H_WMAXALL.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("WAVEMAX", sec_a,ilayer,crys_a), title, 150, 0.0, 150));
+            H_WMAXALL.get(sec_a,ilayer, crys_a).setFillColor(5);
+            H_WMAXALL.get(sec_a,ilayer, crys_a).setXTitle("Waveform Max (mV)");
+            H_WMAXALL.get(sec_a,ilayer, crys_a).setYTitle("Counts");
+
+            H_FADCSAMPLE.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("FADCSAMPLE", sec_a,ilayer,crys_a), title, 100, 0.0, 400));
+            H_FADCSAMPLE.get(sec_a,ilayer, crys_a).setFillColor(5);
+            H_FADCSAMPLE.get(sec_a,ilayer, crys_a).setXTitle("time (ns) ");
+            H_FADCSAMPLE.get(sec_a,ilayer, crys_a).setYTitle("Counts");
+            
+            if (ilayer==1){
+                H_FADCSAMPLEdiff.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("FADCSAMPLEdiff", sec_a,ilayer,crys_a), title, 14, -28, 28));
+                H_FADCSAMPLEdiff.get(sec_a,ilayer, crys_a).setFillColor(5);
+                H_FADCSAMPLEdiff.get(sec_a,ilayer, crys_a).setXTitle("#Delta time (ns) ");
+                H_FADCSAMPLEdiff.get(sec_a,ilayer, crys_a).setYTitle("Counts");
+            }
             
             H_NPE.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("NPE", sec_a,ilayer,crys_a), title, 100, 0.0, 100.0));
             H_NPE.get(sec_a,ilayer, crys_a).setFillColor(5);
@@ -244,17 +300,19 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
             H_COSMIC_fADC.get(sec_a,ilayer, crys_a).setFillColor(3);
             H_COSMIC_fADC.get(sec_a,ilayer, crys_a).setXTitle("fADC Sample");
             H_COSMIC_fADC.get(sec_a,ilayer, crys_a).setYTitle("fADC Counts");
+            
             H_COSMIC_CHARGE.add(sec_a,ilayer, crys_a, new H1D(DetectorDescriptor.getName("Cosmic Charge", sec_a,ilayer,crys_a), title, 80, 0.0, 80.0));
             H_COSMIC_CHARGE.get(sec_a,ilayer, crys_a).setFillColor(2);
             H_COSMIC_CHARGE.get(sec_a,ilayer, crys_a).setXTitle("Charge (pC)");
             H_COSMIC_CHARGE.get(sec_a,ilayer, crys_a).setYTitle("Counts");
             
             mylandau.add(sec_a,ilayer, crys_a, new F1D("landau", 0.0, 80.0));
+            mygauss.add(sec_a,ilayer, crys_a, new F1D("gaus", -20, 20.0));
             
         }
-        H_fADC_N   = new H1D("fADC", 484, 0, 484);
-        H_WMAX     = new H1D("WMAX", 484, 0, 484);
-        H_COSMIC_N = new H1D("EVENT", 484, 0, 484);
+        H_fADC_N   = new H1D("fADC", 232, 0, 232);
+        H_WMAX     = new H1D("WMAX", 232, 0, 232);
+        H_COSMIC_N = new H1D("EVENT", 232, 0, 232);
         
         crystalID       = new double[332];
         noiseRMS        = new double[332];
@@ -295,6 +353,8 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         List<DetectorCounter> counters = decoder.getDetectorCounters(DetectorType.FTHODO);
         FTHODOViewerModule.MyADCFitter fadcFitter = new FTHODOViewerModule.MyADCFitter();
         H_WMAX.reset();
+        int[][][] timediff = new int[8][2][20];
+        
         for (DetectorCounter counter : counters) {
             int key = counter.getDescriptor().getComponent();
             int sec_k = counter.getDescriptor().getSector();
@@ -304,13 +364,24 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
             int adcN_k = (layer_k -1 ) *116+sector_count[sec_k-1]+key;
                 //             System.out.println(counters.size() + " " + icounter + " " + counter.getDescriptor().getComponent());
                 //             System.out.println(counter);
+            
             fadcFitter.fit(counter.getChannels().get(0));
             short pulse[] = counter.getChannels().get(0).getPulse();
             H_fADC_N.fill(adcN_k);
             H_WAVE.get(sec_k, layer_k, key).reset();
+            H_CWAVE.get(sec_k, layer_k, component).reset();
+
             for (int i = 0; i < Math.min(pulse.length, H_fADC.get(sec_k, layer_k, key).getAxis().getNBins()); i++) {
                 H_fADC.get(sec_k, layer_k, key).fill(i, pulse[i] - fadcFitter.getPedestal() + 10.0);
                 H_WAVE.get(sec_k, layer_k, key).fill(i, pulse[i]);
+                H_CWAVE.get(sec_k, layer_k, component).fill(i*4, (pulse[i] - fadcFitter.getPedestal())*LSB );
+
+            }
+            if (fadcFitter.getWave_Max()-fadcFitter.getPedestal()>10)
+                H_WMAXALL.get(sec_k, layer_k, key).fill((fadcFitter.getWave_Max()-fadcFitter.getPedestal())*LSB);
+            if (fadcFitter.getADCtime()>0){
+                H_FADCSAMPLE.get(sec_k, layer_k, key).fill(fadcFitter.getADCtime()*4.0);
+                timediff[sec_k-1][layer_k-1][key-1]=fadcFitter.getADCtime()*4;
             }
             H_WMAX.fill(adcN_k,fadcFitter.getWave_Max()-fadcFitter.getPedestal());
             if(fadcFitter.getWave_Max()-fadcFitter.getPedestal()>threshold)
@@ -318,6 +389,15 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                 H_NOISE.get(sec_k, layer_k, key).fill(fadcFitter.getRMS());
         }
         
+        for (int isect = 0; isect < 8; isect++) {
+            for (int ikey = 0; ikey < 20; ikey++) {
+                if ((isect+1)%2==1 && ikey>8)
+                    continue;
+                if (timediff[isect][1][ikey] >0 && timediff[isect][0][ikey] >0)
+                    H_FADCSAMPLEdiff.get(isect+1, 1, ikey+1).fill(timediff[isect][1][ikey]-timediff[isect][0][ikey]);
+            }
+        }
+  
         if (plotSelect == 0 ) {
             this.canvas.divide(1, 2);
             canvas.cd(layerSelect-1);
@@ -327,9 +407,49 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
             if(H_WAVE.hasEntry(secSelect,(layerSelect%2)+1,keySelect))
                 this.canvas.draw(H_WAVE.get(secSelect,(layerSelect%2)+1,keySelect));
         }
+        else if (plotSelect == 1 ) {
+            this.canvas.divide(1, 2);
+            canvas.cd(layerSelect-1);
+            if(H_WMAXALL.hasEntry(secSelect,layerSelect,keySelect))
+                this.canvas.draw(H_WMAXALL.get(secSelect,layerSelect,keySelect));
+            canvas.cd(layerSelect%2);
+            if(H_WMAXALL.hasEntry(secSelect,(layerSelect%2)+1,keySelect))
+                this.canvas.draw(H_WMAXALL.get(secSelect,(layerSelect%2)+1,keySelect));
+        }
+        else if (plotSelect == 2 ||plotSelect ==  3 ) {
+            this.canvas.divide(1, 3);
+            canvas.cd(layerSelect-1);
+            if(H_FADCSAMPLE.hasEntry(secSelect,layerSelect,keySelect))
+                this.canvas.draw(H_FADCSAMPLE.get(secSelect,layerSelect,keySelect));
+            canvas.cd(layerSelect%2);
+            if(H_FADCSAMPLE.hasEntry(secSelect,(layerSelect%2)+1,keySelect))
+                this.canvas.draw(H_FADCSAMPLE.get(secSelect,(layerSelect%2)+1,keySelect));
+            canvas.cd(2);
+            if(H_FADCSAMPLEdiff.hasEntry(secSelect,1,keySelect))
+                this.canvas.draw(H_FADCSAMPLEdiff.get(secSelect,1,keySelect));
+        }
+//        else if (plotSelect == 3 ) {
+//            this.canvas.divide(1, 1);
+//            canvas.cd(0);
+//            if(H_FADCSAMPLEdiff.hasEntry(secSelect,1,keySelect))
+//                this.canvas.draw(H_FADCSAMPLEdiff.get(secSelect,1,keySelect));
+//        }
+        else if (plotSelect == 4 ) {
+            this.canvas.divide(1, 2);
+            canvas.cd(layerSelect-1);
+            if(H_CWAVE.hasEntry(secSelect,layerSelect,componentSelect))
+                this.canvas.draw(H_CWAVE.get(secSelect,layerSelect,componentSelect));
+            canvas.cd(layerSelect%2);
+            if(H_CWAVE.hasEntry(secSelect,(layerSelect%2)+1,componentSelect))
+                this.canvas.draw(H_CWAVE.get(secSelect,(layerSelect%2)+1,componentSelect));
+        }
+
+        
             //this.dcHits.show();
         this.view.repaint();
     }
+    
+    
     public void detectorSelected(DetectorDescriptor desc) {
         System.out.println("SELECTED = " + desc);
         keySelect = desc.getComponent();
@@ -346,6 +466,46 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
             if(H_WAVE.hasEntry(secSelect,(layerSelect%2)+1, keySelect))
                 this.canvas.draw(H_WAVE.get(secSelect,(layerSelect%2)+1, keySelect));
         }
+        else if (plotSelect == 1 ) {
+            this.canvas.divide(1, 2);
+            canvas.cd(layerSelect-1);
+            if(H_WMAXALL.hasEntry(secSelect,layerSelect,keySelect))
+                this.canvas.draw(H_WMAXALL.get(secSelect,layerSelect,keySelect));
+            canvas.cd(layerSelect%2);
+            if(H_WMAXALL.hasEntry(secSelect,(layerSelect%2)+1, keySelect))
+                this.canvas.draw(H_WMAXALL.get(secSelect,(layerSelect%2)+1, keySelect));
+        }
+        else if (plotSelect == 2 ) {
+            this.canvas.divide(1, 3);
+            canvas.cd(layerSelect-1);
+            if(H_FADCSAMPLE.hasEntry(secSelect,layerSelect,keySelect))
+                this.canvas.draw(H_FADCSAMPLE.get(secSelect,layerSelect,keySelect));
+            canvas.cd(layerSelect%2);
+            if(H_FADCSAMPLE.hasEntry(secSelect,(layerSelect%2)+1, keySelect))
+                this.canvas.draw(H_FADCSAMPLE.get(secSelect,(layerSelect%2)+1, keySelect));
+            canvas.cd(2);
+            if(H_FADCSAMPLEdiff.hasEntry(secSelect,1, keySelect))
+                this.canvas.draw(H_FADCSAMPLEdiff.get(secSelect,1, keySelect));
+        }
+        else if (plotSelect == 3 ) {
+            this.canvas.divide(1, 1);
+            canvas.cd(0);
+            if(H_FADCSAMPLEdiff.hasEntry(secSelect,1, keySelect)){
+                this.canvas.draw(H_FADCSAMPLEdiff.get(secSelect,1, keySelect));
+                this.canvas.draw(mygauss.get(secSelect,1, keySelect), "same");
+            }
+        }
+        else if (plotSelect == 4 ) {
+            this.canvas.divide(1, 2);
+            canvas.cd(layerSelect-1);
+            if(H_CWAVE.hasEntry(secSelect,layerSelect,componentSelect))
+                this.canvas.draw(H_CWAVE.get(secSelect,layerSelect,componentSelect));
+            canvas.cd(layerSelect%2);
+            if(H_CWAVE.hasEntry(secSelect,(layerSelect%2)+1,componentSelect))
+                this.canvas.draw(H_CWAVE.get(secSelect,(layerSelect%2)+1,componentSelect));
+        }
+
+        
     }
     public void update(DetectorShape2D shape) {
         int sector = shape.getDescriptor().getSector();
@@ -355,7 +515,7 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         int adcN_k = (layer -1 ) *116+sector_count[sector-1]+paddle;
             //shape.setColor(200, 200, 200);
             //     System.out.println("Bin Content n" +adcN_k + "="+ H_WMAX.getBinContent(adcN_k));
-        if(plotSelect==0) {
+        if(plotSelect==0 || plotSelect==1 ||plotSelect==2) {
             if(H_WMAX.getBinContent(adcN_k)>threshold) {
                 shape.setColor(200, 0, 200);
             }
@@ -363,7 +523,23 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
                 shape.setColor(100, 100, 100);
             }
         }
+        if(plotSelect==4) {
+            if(H_WMAX.getBinContent(adcN_k)*LSB > cosmicsThresh) {
+                shape.setColor(200, 0, 200);
+            }
+            else if((H_WMAX.getBinContent(adcN_k)-baseline)*LSB  > speThresh) {
+                    //shape.setColor(100, 0, 0);
+                shape.setColor(100, 0, 0);
+                    // 		int value = (int)H_WMAX.getBinContent(adcN_k);
+                    // 		shape.setColor(value, 0, 0);
+            }
+            else {
+                shape.setColor(100, 100, 100);
+            }
+        }
+
     }
+    
     public String getName() {
         return "FTHODOEventViewerModule";
     }
@@ -397,18 +573,29 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         if (e.getActionCommand().compareTo("Reset") == 0) {
             resetHistograms();
         }
-        if (e.getActionCommand().compareTo("Fit") == 0) {
-            fitHistograms();
-        }
-        
         if (e.getActionCommand().compareTo("Waveforms") == 0) {
             plotSelect = 0;
             resetCanvas();
         }
+        if (e.getActionCommand().compareTo("Waveform Amplitute") == 0) {
+            plotSelect = 1;
+            resetCanvas();
+        }
+        if (e.getActionCommand().compareTo("fADC time") == 0) {
+            plotSelect = 2;
+            resetCanvas();
+        }
+        if (e.getActionCommand().compareTo("Fit Timing") == 0) {
+            plotSelect = 3;
+            fitTimingdiff();
+        }
+        if (e.getActionCommand().compareTo("Calibrated") == 0) {
+            plotSelect = 4;
+        
     }
     
     private void resetCanvas() {
-        this.canvas.divide(1, 1);
+        this.canvas.divide(1, 2);
         canvas.cd(0);
     }
     
@@ -440,7 +627,6 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
             }
         }
     }
-    
     private void initLandauFitPar(int key, H1D hcosmic) {
         if(hcosmic.getBinContent(0)==0) mylandau.add(0, 0, key, new F1D("landau",     0.0, 80.0));
         else                            mylandau.add(0, 0, key, new F1D("landau+exp", 0.0, 80.0));
@@ -458,11 +644,51 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         }
     }
     
+    private void fitTimingdiff() {
+        for (int comp = 0; comp < 116; comp++) {
+            int layer_c = 1;
+            int iy_c = (comp-(layer_c-1)*116) / 29;
+            int ix_c = comp - iy_c * 29 -(layer_c-1)*116;
+            int sec_c;
+            int crys_c;
+            if (ix_c<9) {
+                sec_c = iy_c*2 +1;
+                crys_c = ix_c + 1;
+            }
+            else {
+                sec_c = iy_c*2 +2;
+                crys_c = ix_c + 1 -9;
+            }
+            if(H_FADCSAMPLEdiff.hasEntry(sec_c, 1, crys_c)&& H_FADCSAMPLEdiff.get(sec_c, 1, crys_c).getEntries()>10) {
+                H1D htimediff = H_FADCSAMPLEdiff.get(sec_c, 1, crys_c);
+                initGausFitPar(sec_c, 1, crys_c, htimediff);
+                H_FADCSAMPLEdiff.get(sec_c, 1, crys_c).fit(mygauss.get(sec_c, 1, crys_c));
+            }
+        }
+    }
+    private void initGausFitPar(int sec_c, int lay_c, int crys_c, H1D htimediff) {
+        mygauss.add(sec_c, lay_c , crys_c, new F1D("gaus", -20.0, 20.0));
+        double ampldiff;
+        double sddiff;
+        double meandif;
+        
+        ampldiff=htimediff.getEntries()/1.5;
+        meandif=htimediff.getMean();
+        sddiff=htimediff.getRMS();
+        mygauss.get(sec_c, lay_c , crys_c).setParameter(0, ampldiff);
+        mygauss.get(sec_c, lay_c , crys_c).setParameter(1, meandif);
+        mygauss.get(sec_c, lay_c , crys_c).setParameter(2, sddiff);
+    }
+    
+    
+
+    
     public class MyADCFitter implements IFADCFitter {
         
         double rms = 0;
         double pedestal = 0;
         double wave_max=0;
+        int fadctime=0;
         
         public double getPedestal() {
             return pedestal;
@@ -475,22 +701,47 @@ public class FTHODOViewerModule implements IDetectorProcessor, IDetectorListener
         public double getWave_Max() {
             return wave_max;
         }
+        public int getADCtime() {
+            return fadctime;
+        }
         
         public void fit(DetectorChannel dc) {
             short[] pulse = dc.getPulse();
-            double ped = 0.0;
+            double pedlow = 0.0;    //pedestal calculated using bins ped_i1, ped_i2
+            double pedhigh = 0.0;   //pedestal calculated using bins ped_j1, ped_j2
+            int fadctimethre=0;
             double noise = 0;
             double wmax=0;
             for (int bin = ped_i1; bin < ped_i2; bin++) {
-                ped += pulse[bin];
+                pedlow += pulse[bin];
                 noise += pulse[bin] * pulse[bin];
             }
-            for (int bin=0; bin<pulse.length; bin++) {
-                if(pulse[bin]>wmax) wmax=pulse[bin];
+            
+            for (int bin = ped_j1; bin < ped_j2; bin++) {
+                pedhigh += pulse[bin];
             }
-            pedestal = ped / (ped_i2 - ped_i1);
+            if (pedlow<pedhigh)
+                pedestal = pedlow / (ped_i2 - ped_i1);
+            else
+                pedestal = pedhigh / (ped_j2 - ped_j1);
+
+            
+            for (int bin=0; bin<pulse.length; bin++) {
+                if(pulse[bin]>wmax)
+                    wmax=pulse[bin];
+            }
+            for (int bin=0; bin<pulse.length; bin++) {
+                if(pulse[bin]-pedestal>100 && wmax-pedestal>threshold)
+                    if (fadctimethre==0)
+                        fadctimethre=bin;
+                
+            }
+            
+                //Returns the smallest pedestal value. Works better if peak is close to the beginning of the histogram.
+            
             rms = LSB * Math.sqrt(noise / (ped_i2 - ped_i1) - pedestal * pedestal);
             wave_max=wmax;
+            fadctime=fadctimethre;
         }
         
     }
